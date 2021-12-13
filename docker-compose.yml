@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  api:
+    build: 
+      dockerfile: Dockerfile
+      context: './api'
+    container_name: po_api
+    volumes:
+      - ./api/src:/app/src
+      - ./api/test:/app/test
+    depends_on:
+      - mysql
+    ports:
+      - 3001:3000
+    env_file:
+      - ./api/.env
+  frontend:
+    build:
+      dockerfile: Dockerfile
+      context: './frontend'
+    container_name: po_frontend
+    volumes:
+      - ./frontend/public:/app/public
+      - ./frontend/src:/app/src
+    ports:
+      - 3000:3000
+  mysql:
+    container_name: po_mysql
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - database_po_mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+volumes:
+  database_po_mysql:
