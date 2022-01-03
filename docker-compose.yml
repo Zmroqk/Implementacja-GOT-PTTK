@@ -34,5 +34,7 @@ services:
       - database_po_mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    cap_add:
+      - SYS_NICE
 volumes:
   database_po_mysql:
