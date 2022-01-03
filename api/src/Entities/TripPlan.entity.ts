@@ -1,5 +1,6 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Tourist } from "./Tourist.entity";
+import { Trip } from "./Trip.entity";
 
 @Entity()
 export class TripPlan {
@@ -18,6 +19,9 @@ export class TripPlan {
    @ManyToOne(() => Tourist, tourist => tourist.createdPlans)
    author: Tourist
 
-   @ManyToMany(() => Tourist, tourist => tourist.plans)
+   @ManyToMany(() => Tourist, tourist => tourist.usedPlans)
    tourists: Tourist[]
+
+   @OneToMany(() => Trip, trip => trip.plan)
+   trips: Trip[]
 }

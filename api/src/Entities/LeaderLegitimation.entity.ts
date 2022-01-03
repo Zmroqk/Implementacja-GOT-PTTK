@@ -8,6 +8,7 @@ export class LeaderLegitimation {
    id: number
 
    @OneToOne(() => Leader, leader => leader.legitimation)
+   @JoinColumn()
    leader: Leader
 
    @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.legitimations)
