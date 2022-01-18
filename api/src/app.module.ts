@@ -27,6 +27,8 @@ import { TripSegment } from './Entities/TripSegment.entity';
 import { User } from './Entities/User.entity';
 import { UserSegment } from './Entities/UserSegment.entity';
 import { Waypoint } from './Entities/Waypoint.entity';
+import { TouristModule } from './tourist/tourist.module';
+import { TripService } from './trip/trip.service';
 
 @Module({
   imports: [
@@ -67,8 +69,9 @@ import { Waypoint } from './Entities/Waypoint.entity';
       synchronize: JSON.parse(process.env['DB_SYNC']) || false,
       cache: false
     }),
+    TouristModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TripService],
 })
 export class AppModule {}
