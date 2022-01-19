@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Segment } from "./Segment.entity";
+import { TripPlan } from "./TripPlan.entity";
 import { UserSegment } from "./UserSegment.entity";
 
 @Entity()
@@ -12,6 +13,9 @@ export class TripSegment {
 
    @Column()
    consecutiveNumber: number
+
+   @ManyToOne(() => TripPlan, plan => plan.tripSegments)
+   plan: TripPlan
 
    @ManyToOne(() => Segment, segment => segment.tripSegments)
    segment: Segment | null

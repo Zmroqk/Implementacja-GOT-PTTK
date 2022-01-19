@@ -9,7 +9,7 @@ import { GetOngoingBadgeResponse } from './dtos/GetOngoingBadgeResponse';
 export class TouristService {
    constructor(
       @InjectRepository(Badge) private badgeRepository: Repository<Badge>,
-      @Inject() private tripsService: TripService,
+      @Inject(TripService) private tripsService: TripService,
    ) {}
 
    async getBadges(userId: number): Promise<Badge[]> {

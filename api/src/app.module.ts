@@ -28,7 +28,8 @@ import { User } from './Entities/User.entity';
 import { UserSegment } from './Entities/UserSegment.entity';
 import { Waypoint } from './Entities/Waypoint.entity';
 import { TouristModule } from './tourist/tourist.module';
-import { TripService } from './trip/trip.service';
+import { AdminModule } from './admin/admin.module';
+import { LeaderModule } from './leader/leader.module';
 
 @Module({
   imports: [
@@ -70,8 +71,10 @@ import { TripService } from './trip/trip.service';
       cache: false
     }),
     TouristModule,
+    AdminModule,
+    LeaderModule,
   ],
   controllers: [AppController],
-  providers: [AppService, TripService],
+  providers: [AppService],
 })
 export class AppModule {}
