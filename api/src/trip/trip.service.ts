@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Documentation } from 'src/Entities/Documentation.entity';
+import { DocumentationStatus } from 'src/Entities/DocumentationStatus.entity';
 import { Tourist } from 'src/Entities/Tourist.entity';
 import { Trip } from 'src/Entities/Trip.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
@@ -13,7 +14,8 @@ export class TripService {
       @InjectRepository(TripPlan)
       private tripPlansRepository: Repository<TripPlan>,
       @InjectRepository(Tourist)
-      private touristsRepository: Repository<Tourist>
+      private touristsRepository: Repository<Tourist>,
+      @InjectRepository(DocumentationStatus) private documentationStatusRepository: Repository<DocumentationStatus>
    ) {}
 
    async getProgress(userId: number, badgeId: number): Promise<number> {
@@ -50,9 +52,19 @@ export class TripService {
       newTrip.badge = tourist.badges.find((b) => b.receivedDate == null)
       newTrip.plan = plan
       newTrip.points = plan.points
+      const documentation = new Documentation()
+      documentation.book = tourist.book
+      documentation.trip = newTrip
       // CHANGE zmiana koncepcji
       if(isLeaderPresent){     
-         // TODO what to do when leader is present
+         documentation.status = await this.documentationStatusRepository.findOne({
+            status: "Verified"
+         })
+      }
+      else {
+         documentation.status = await this.documentationStatusRepository.findOne({
+            status: "Created"
+         })
       }
       return this.tripsRepository.save(newTrip)
    }

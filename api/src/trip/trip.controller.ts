@@ -13,7 +13,6 @@ export class TripController {
       return this.tripService.getTripPlans()
    }
 
-   // TODO Zakończyć tworzenie trasy wycieczki aktualny punkt 5.1.1
    @Post('create/plan')
    async createTripFromTripPlan(@Body() data: CreateTripFromTripPlanRequest): Promise<Trip>{
       if(data.dateEnd < data.dateStart){
