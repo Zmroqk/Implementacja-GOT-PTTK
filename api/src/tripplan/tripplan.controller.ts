@@ -6,6 +6,7 @@ import {
    Param,
    Post,
 } from '@nestjs/common';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { Segment } from 'src/Entities/Segment.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
 import { UserSegment } from 'src/Entities/UserSegment.entity';
@@ -43,6 +44,7 @@ export class TripPlanController {
       return userSegments;
    }
 
+   @ApiBody({type: CreateTripPlanDto})
    @Post('create')
    async createTripPlan(
       @Body() createTripPlan: CreateTripPlanDto,

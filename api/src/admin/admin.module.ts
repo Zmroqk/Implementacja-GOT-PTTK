@@ -10,6 +10,10 @@ import { Waypoint } from 'src/Entities/Waypoint.entity';
 import { LeaderModule } from 'src/leader/leader.module';
 import { SegmentController } from 'src/segment/segment.controller';
 import { SegmentService } from 'src/segment/segment.service';
+import { ClosureService } from 'src/closure/closure.service';
+import { ClosureController } from 'src/closure/closure.controller';
+import { RouterModule } from '@nestjs/core';
+import { Closure } from 'src/Entities/Closure.entity';
 
 @Module({
    imports: [
@@ -20,9 +24,10 @@ import { SegmentService } from 'src/segment/segment.service';
          MountainGroup,
          MountainRange,
          Waypoint,
+         Closure
       ]),
    ],
-   controllers: [ApplicationController, SegmentController],
-   providers: [ApplicationService, SegmentService],
+   controllers: [ApplicationController, SegmentController, ClosureController],
+   providers: [ApplicationService, SegmentService, ClosureService],
 })
 export class AdminModule {}

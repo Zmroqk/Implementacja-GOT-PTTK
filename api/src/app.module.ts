@@ -30,8 +30,7 @@ import { Waypoint } from './Entities/Waypoint.entity';
 import { TouristModule } from './tourist/tourist.module';
 import { AdminModule } from './admin/admin.module';
 import { LeaderModule } from './leader/leader.module';
-import { SegmentController } from './segment/segment.controller';
-import { SegmentService } from './segment/segment.service';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
    imports: [
@@ -72,11 +71,19 @@ import { SegmentService } from './segment/segment.service';
          synchronize: JSON.parse(process.env['DB_SYNC']) || false,
          cache: false,
       }),
-      TouristModule,
       AdminModule,
+      TouristModule,
       LeaderModule,
+      RouterModule.register([
+         {
+            module: AdminModule,
+            path: 'Admin',
+         },
+         { module: TouristModule, path: 'Tourist' },
+         { module: LeaderModule, path: 'Leader' },
+      ]),
    ],
    controllers: [AppController],
-   providers: [AppService],
+   providers: [AppService]
 })
 export class AppModule {}
