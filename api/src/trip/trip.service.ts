@@ -50,6 +50,7 @@ export class TripService {
       newTrip.badge = tourist.badges.find((b) => b.receivedDate == null)
       newTrip.plan = plan
       newTrip.points = plan.points
+      // CHANGE zmiana koncepcji
       if(isLeaderPresent){     
          // TODO what to do when leader is present
       }
