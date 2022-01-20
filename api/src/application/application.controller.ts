@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import {
+   Controller,
+   Get,
+   Param,
+   Post,
+} from '@nestjs/common';
+import { Application } from 'src/Entities/Application.entity';
+import { Leader } from 'src/Entities/Leader.entity';
 import { ApplicationService } from './application.service';
 
 @Controller('application')
@@ -11,7 +18,12 @@ export class ApplicationController {
    }
 
    @Post('accept/:id')
-   async acceptApplication(@Param('id') id: number) {
-      
+   async acceptApplication(@Param('id') id: number): Promise<Leader> {
+      return this.applicationService.acceptApplication(id);
+   }
+
+   @Post('decline/:id')
+   async declineApplication(@Param('id') id: number): Promise<Application> {
+      return this.applicationService.declineApplication(id);
    }
 }

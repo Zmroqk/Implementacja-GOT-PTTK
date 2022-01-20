@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Application } from 'src/Entities/Application.entity';
 import { Badge } from 'src/Entities/Badge.entity';
+import { Documentation } from 'src/Entities/Documentation.entity';
+import { DocumentationStatus } from 'src/Entities/DocumentationStatus.entity';
+import { Segment } from 'src/Entities/Segment.entity';
 import { Tourist } from 'src/Entities/Tourist.entity';
 import { Trip } from 'src/Entities/Trip.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
 import { User } from 'src/Entities/User.entity';
+import { UserSegment } from 'src/Entities/UserSegment.entity';
 import { Waypoint } from 'src/Entities/Waypoint.entity';
 import { ProofController } from 'src/proof/proof.controller';
 import { ProofService } from 'src/proof/proof.service';
@@ -16,8 +21,26 @@ import { TouristController } from './tourist.controller';
 import { TouristService } from './tourist.service';
 
 @Module({
-   imports: [TypeOrmModule.forFeature([Badge, Trip, TripPlan, Tourist, User, Waypoint])],
-   controllers: [TouristController, TripController, ProofController, TripPlanController],
+   imports: [
+      TypeOrmModule.forFeature([
+         Badge,
+         Trip,
+         TripPlan,
+         Tourist,
+         User,
+         Waypoint,
+         DocumentationStatus,
+         Documentation,
+         Segment,
+         UserSegment,
+      ]),
+   ],
+   controllers: [
+      TouristController,
+      TripController,
+      ProofController,
+      TripPlanController,
+   ],
    providers: [TouristService, TripService, ProofService, TripPlanService],
 })
 export class TouristModule {}
