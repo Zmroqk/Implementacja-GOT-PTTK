@@ -1,8 +1,10 @@
 import { BadRequestException, Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Closure } from 'src/Entities/Closure.entity';
 import { ClosureService } from './closure.service';
 import { CreateClosureDto } from './dtos/createClosure.dto';
 
+@ApiTags('Closure')
 @Controller('closure')
 export class ClosureController {
    constructor(private closureService: ClosureService) {}
@@ -12,7 +14,7 @@ export class ClosureController {
       return this.closureService.getAllClosure();
    }
 
-   @Get('open/:closure_id')
+   @Post('open/:closure_id')
    async openClosure(@Param() closureId: number): Promise<Closure> {
       return this.closureService.endClosure(closureId);
    }

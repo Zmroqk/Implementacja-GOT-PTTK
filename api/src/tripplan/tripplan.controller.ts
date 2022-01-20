@@ -6,7 +6,7 @@ import {
    Param,
    Post,
 } from '@nestjs/common';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Segment } from 'src/Entities/Segment.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
 import { UserSegment } from 'src/Entities/UserSegment.entity';
@@ -14,6 +14,7 @@ import { Waypoint } from 'src/Entities/Waypoint.entity';
 import { CreateTripPlanDto } from './dtos/requests/CreateTripPlanDto';
 import { TripPlanService } from './tripplan.service';
 
+@ApiTags("Trip Plan")
 @Controller('tripplan')
 export class TripPlanController {
    constructor(private tripPlanService: TripPlanService) {}

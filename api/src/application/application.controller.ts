@@ -4,10 +4,12 @@ import {
    Param,
    Post,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Application } from 'src/Entities/Application.entity';
 import { Leader } from 'src/Entities/Leader.entity';
 import { ApplicationService } from './application.service';
 
+@ApiTags('Application')
 @Controller('application')
 export class ApplicationController {
    constructor(private readonly applicationService: ApplicationService) {}

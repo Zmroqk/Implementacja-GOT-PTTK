@@ -1,9 +1,11 @@
 import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Post } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Trip } from 'src/Entities/Trip.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
 import { CreateTripFromTripPlanRequest } from './dtos/requests/CreateTripFromPlanRequest';
 import { TripService } from './trip.service';
 
+@ApiTags("Trip")
 @Controller('trip')
 export class TripController {
    constructor(private tripService: TripService) {}

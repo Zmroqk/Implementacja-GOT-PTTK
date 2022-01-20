@@ -5,9 +5,11 @@ import {
    NotFoundException,
    Param,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { TouristService } from './tourist.service';
 
-@Controller('tourist')
+@ApiTags("Tourist")
+@Controller()
 export class TouristController {
    constructor(private touristService: TouristService) {}
 
