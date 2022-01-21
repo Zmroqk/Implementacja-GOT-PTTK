@@ -2,25 +2,33 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-import Badge from './components/Badge';
-import Plan from './components/Plan';
-import Trip from './components/Trip';
-import Closure from './components/Closure';
-import Leader from './components/Leader';
-import Segment from './components/Segment';
+import Tourist from './components/Tourist';
+import Admin from './components/Admin';
 
 import {
-  BrowserRouter,
+  BrowserRouter as Router,
   Routes,
   Route
 } from "react-router-dom";
 
 
+
+
 function App() {
   return (
     <div>
-      <BrowserRouter>
+      <Router>
         <Routes>
+          <Route path="/tourist/*" element={<Tourist />} />
+          <Route path="/admin/*" element={<Admin />} />
+        </Routes>
+      </Router>
+      
+      
+      {/* <BrowserRouter>
+      <Tourist />
+        <Routes>
+        <Route path="/tourist" element={<Tourist />} />
           <Route path="/tourist/plan" element={<Plan />} />
           <Route path="/tourist/trip" element={<Trip />} />
           <Route path="/tourist/badge" element={<Badge />} />
@@ -28,7 +36,7 @@ function App() {
           <Route path="/admin/closure" element={<Closure />} />
           <Route path="/admin/leader" element={<Leader />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
     </div>
   );
 }
