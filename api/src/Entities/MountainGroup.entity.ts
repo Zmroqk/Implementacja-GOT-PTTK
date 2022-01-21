@@ -12,7 +12,6 @@ export class MountainGroup {
    name: string
 
    @ManyToMany(() => LeaderLegitimation, legitimation => legitimation.mountainGroups)
-   @JoinTable()
    legitimations: LeaderLegitimation[]
 
    @OneToMany(() => MountainRange, range => range.mountainGroup)

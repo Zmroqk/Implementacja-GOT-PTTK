@@ -9,7 +9,7 @@ export class Badge {
    @PrimaryGeneratedColumn()
    id: number
 
-   @Column({type: 'date'})
+   @Column({type: 'date', nullable: true})
    receivedDate: Date | null
 
    @OneToMany(() => Trip, trip => trip.badge)
@@ -21,10 +21,10 @@ export class Badge {
    @ManyToOne(() => BadgeLevel, level => level.badges)
    level: BadgeLevel
 
-   @ManyToOne(() => Tourist, tourist => tourist.badges)
+   @ManyToOne(() => Tourist, tourist => tourist.badges, { nullable: true })
    @JoinColumn([{name: "touristId", referencedColumnName: "id"}])
    tourist: Tourist
 
-   @Column()
+   @Column({nullable: true})
    touristId: number
 }
