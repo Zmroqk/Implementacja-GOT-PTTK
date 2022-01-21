@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
+import { ButtonGroup, ToggleButton, Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
 
 import Plan from './Plan';
 import Trip from './Trip';
@@ -10,13 +10,16 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Link
+    Link,
+    useNavigate
   } from "react-router-dom";
 
 
-
-
 export default function Tourist() {
+    const [radioValue, setRadioValue] = useState('2');
+
+    const navigate = useNavigate();
+
   return (
       <div>
         <div>
@@ -32,7 +35,38 @@ export default function Tourist() {
                             <Nav.Link as={Link} to="/tourist/badge">Książeczka GOT</Nav.Link>
                         </Nav>
                         <Nav>
-                            <Nav.Link href="#deets">Admin</Nav.Link>
+                            <ButtonGroup>
+                                <ToggleButton
+                                    key={1}
+                                    id={`radio-1`}
+                                    type="radio"
+                                    variant={"outline-primary"}
+                                    name="radio"
+                                    value={1}
+                                    checked={radioValue === "1"}
+                                    onChange={(e) => {
+                                        setRadioValue(e.currentTarget.value);
+                                        navigate("/admin")
+                                    }}
+                                >
+                                    Admin
+                                </ToggleButton>
+                                <ToggleButton
+                                    key={2}
+                                    id={`radio-2`}
+                                    type="radio"
+                                    variant={"outline-primary"}
+                                    name="radio"
+                                    value={2}
+                                    checked={radioValue === "2"}
+                                    onChange={(e) => {
+                                        setRadioValue(e.currentTarget.value);
+                                        navigate("/tourist")
+                                    }}
+                                >
+                                    Turysta
+                                </ToggleButton>
+                            </ButtonGroup>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -48,3 +82,7 @@ export default function Tourist() {
         </div>
   )
 }
+function useHistory() {
+    throw new Error('Function not implemented.');
+}
+

@@ -23,20 +23,6 @@ function App() {
           <Route path="/admin/*" element={<Admin />} />
         </Routes>
       </Router>
-      
-      
-      {/* <BrowserRouter>
-      <Tourist />
-        <Routes>
-        <Route path="/tourist" element={<Tourist />} />
-          <Route path="/tourist/plan" element={<Plan />} />
-          <Route path="/tourist/trip" element={<Trip />} />
-          <Route path="/tourist/badge" element={<Badge />} />
-          <Route path="/admin/segment" element={<Segment />} />
-          <Route path="/admin/closure" element={<Closure />} />
-          <Route path="/admin/leader" element={<Leader />} />
-        </Routes>
-      </BrowserRouter> */}
     </div>
   );
 }

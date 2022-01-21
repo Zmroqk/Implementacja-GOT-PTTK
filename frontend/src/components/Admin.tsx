@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Container, Nav, Navbar, NavDropdown} from 'react-bootstrap';
+import { ButtonGroup, Container, Nav, Navbar, NavDropdown, ToggleButton} from 'react-bootstrap';
 
 import Leader from './Leader';
 import Closure from './Closure';
@@ -11,11 +11,16 @@ import {
     BrowserRouter as Router,
     Routes,
     Route,
-    Link
+    Link,
+    useNavigate
   } from "react-router-dom";
 
 
 export default function Admin() {
+    const [radioValue, setRadioValue] = useState('1');
+
+    const navigate = useNavigate();
+
     return (
         <div>
           <div>
@@ -31,7 +36,38 @@ export default function Admin() {
                               <Nav.Link href="#">Punkty</Nav.Link>
                           </Nav>
                           <Nav>
-                              <Nav.Link href="#deets"></Nav.Link>
+                          <ButtonGroup>
+                                <ToggleButton
+                                    key={1}
+                                    id={`radio-1`}
+                                    type="radio"
+                                    variant={"outline-primary"}
+                                    name="radio"
+                                    value={1}
+                                    checked={radioValue === "1"}
+                                    onChange={(e) => {
+                                        setRadioValue(e.currentTarget.value);
+                                        navigate("/admin")
+                                    }}
+                                >
+                                    Admin
+                                </ToggleButton>
+                                <ToggleButton
+                                    key={2}
+                                    id={`radio-2`}
+                                    type="radio"
+                                    variant={"outline-primary"}
+                                    name="radio"
+                                    value={2}
+                                    checked={radioValue === "2"}
+                                    onChange={(e) => {
+                                        setRadioValue(e.currentTarget.value);
+                                        navigate("/tourist")
+                                    }}
+                                >
+                                    Turysta
+                                </ToggleButton>
+                            </ButtonGroup>
                           </Nav>
                       </Navbar.Collapse>
                   </Container>

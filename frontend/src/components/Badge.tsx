@@ -8,9 +8,7 @@ export default function Badge() {
     <Container>
       <Row>
         <Col>
-          <p>
-            FOO
-          </p>
+          <h1>Badge</h1>
         </Col>
         <Col>
         <p>
