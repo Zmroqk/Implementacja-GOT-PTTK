@@ -14,7 +14,7 @@ export class MountainGroup {
    @ManyToMany(() => LeaderLegitimation, legitimation => legitimation.mountainGroups)
    legitimations: LeaderLegitimation[]
 
-   @OneToMany(() => MountainRange, range => range.mountainGroup)
+   @OneToMany(() => MountainRange, range => range.mountainGroup, { eager: true, cascade: true })
    mountainRanges: MountainRange[]
 
    // CHANGE added connection to applications

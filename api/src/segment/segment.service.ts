@@ -16,6 +16,8 @@ export class SegmentService {
       private mountainRangeRepository: Repository<MountainRange>,
       @InjectRepository(Waypoint)
       private waypointRepository: Repository<Waypoint>,
+      @InjectRepository(Segment)
+      private segmentRepository: Repository<Segment>
    ) {}
 
    //CHANGE Directy downloads data
@@ -23,10 +25,12 @@ export class SegmentService {
       const groups = await this.mountainGroupRepository.find();
       const ranges = await this.mountainRangeRepository.find();
       const waypoints = await this.waypointRepository.find();
+      const segments = await this.segmentRepository.find();
       const response = new RequiredDataCreateSegmentData();
       response.mountainGroups = groups;
       response.mountainRanges = ranges;
       response.waypoints = waypoints;
+      response.segments = segments;
       return response;
    }
    // CHANGE Removed mountainGroupId and mountainRangeId they are not required as waypoints contains this information
@@ -43,6 +47,10 @@ export class SegmentService {
       if(!waypoint || !waypointEnd)
          throw new NotFoundException(`Waypoint with id: ${waypointFromId} not found`)
       const segment = new Segment()
+      segment.name = `${waypoint.name}-${waypointEnd.name}`
+      if(via.length > 0){
+         segment.name += ` via ${via}`
+      }
       segment.inPoland = inPoland
       segment.via = via
       segment.startPoint = waypoint

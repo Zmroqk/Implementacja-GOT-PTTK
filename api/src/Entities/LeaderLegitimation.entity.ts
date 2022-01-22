@@ -11,7 +11,7 @@ export class LeaderLegitimation {
    @JoinColumn()
    leader: Leader
 
-   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.legitimations, { cascade: ['insert', 'update' ]})
+   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.legitimations, { eager: true, cascade: ['insert', 'update'] })
    @JoinTable()
    mountainGroups: MountainGroup[]
 }

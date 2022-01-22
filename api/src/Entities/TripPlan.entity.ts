@@ -17,7 +17,7 @@ export class TripPlan {
    @Column()
    implicit: boolean | null
 
-   @ManyToOne(() => Tourist, tourist => tourist.createdPlans)
+   @ManyToOne(() => Tourist, tourist => tourist.createdPlans, { eager: true, cascade: ['insert', 'update']})
    author: Tourist
 
    @ManyToMany(() => Tourist, tourist => tourist.usedPlans)
@@ -26,6 +26,6 @@ export class TripPlan {
    @OneToMany(() => Trip, trip => trip.plan)
    trips: Trip[]
 
-   @OneToMany(() => TripSegment, tripSegment => tripSegment.plan)
+   @OneToMany(() => TripSegment, tripSegment => tripSegment.plan, { eager: true, cascade: true})
    tripSegments: TripSegment[]
 }
