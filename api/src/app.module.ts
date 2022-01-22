@@ -27,48 +27,65 @@ import { TripSegment } from './Entities/TripSegment.entity';
 import { User } from './Entities/User.entity';
 import { UserSegment } from './Entities/UserSegment.entity';
 import { Waypoint } from './Entities/Waypoint.entity';
+import { TouristModule } from './tourist/tourist.module';
+import { AdminModule } from './admin/admin.module';
+import { LeaderModule } from './leader/leader.module';
+import { RouterModule } from '@nestjs/core';
+import { DatabaseSeederModule } from './database-seeder/database-seeder.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env['DB_HOST'],
-      port: Number.parseInt(process.env['DB_PORT']) || 3000,
-      username: process.env['DB_USER'],
-      password: process.env['DB_PASS'],
-      database: process.env['DB_DATABASE'],
-      entities: [
-        PTTKBook,
-        User,
-        Tourist,
-        Leader,
-        Admin,
-        ApplicationType,
-        Application,
-        LeaderLegitimation,
-        MountainGroup,
-        MountainRange,
-        Waypoint,
-        Segment,
-        HikingTrail,
-        Color,
-        Closure,
-        UserSegment,
-        TripSegment,
-        TripPlan,
-        Trip,
-        Badge,
-        BadgeType,
-        BadgeLevel,
-        Documentation,
-        DocumentationStatus,
-        DocumentationProve,
-      ],
-      synchronize: JSON.parse(process.env['DB_SYNC']) || false,
-      cache: false
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+   imports: [
+      TypeOrmModule.forRoot({
+         type: 'mysql',
+         host: process.env['DB_HOST'],
+         port: Number.parseInt(process.env['DB_PORT']) || 3000,
+         username: process.env['DB_USER'],
+         password: process.env['DB_PASS'],
+         database: process.env['DB_DATABASE'],
+         entities: [
+            PTTKBook,
+            User,
+            Tourist,
+            Leader,
+            Admin,
+            ApplicationType,
+            Application,
+            LeaderLegitimation,
+            MountainGroup,
+            MountainRange,
+            Waypoint,
+            Segment,
+            HikingTrail,
+            Color,
+            Closure,
+            UserSegment,
+            TripSegment,
+            TripPlan,
+            Trip,
+            Badge,
+            BadgeType,
+            BadgeLevel,
+            Documentation,
+            DocumentationStatus,
+            DocumentationProve,
+         ],
+         synchronize: JSON.parse(process.env['DB_SYNC']) || false,
+         cache: false,
+      }),
+      AdminModule,
+      TouristModule,
+      LeaderModule,
+      RouterModule.register([
+         {
+            module: AdminModule,
+            path: 'Admin',
+         },
+         { module: TouristModule, path: 'Tourist' },
+         { module: LeaderModule, path: 'Leader' },
+      ]),
+      DatabaseSeederModule,
+   ],
+   controllers: [AppController],
+   providers: [AppService],
 })
 export class AppModule {}
