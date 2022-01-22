@@ -13,18 +13,18 @@ export class Documentation {
    @Column({length: 1000})
    description: string | null
 
-   @ManyToOne(() => Leader, leader => leader.checkedDocumentations)
+   @ManyToOne(() => Leader, leader => leader.checkedDocumentations, { eager: true, cascade: ['insert', 'update']})
    checker: Leader | null
 
-   @OneToOne(() => Trip, trip => trip.documentation)
+   @OneToOne(() => Trip, trip => trip.documentation, { eager: true, cascade: ['insert', 'update']})
    trip: Trip
 
-   @ManyToOne(() => PTTKBook, book => book.documentations)
+   @ManyToOne(() => PTTKBook, book => book.documentations, { eager: true, cascade: ['insert', 'update']})
    book: PTTKBook
 
-   @ManyToOne(() => DocumentationStatus, status => status.documents)
+   @ManyToOne(() => DocumentationStatus, status => status.documents, { eager: true, cascade: ['insert', 'update']})
    status: DocumentationStatus
 
-   @OneToMany(() => DocumentationProve, prove => prove.documentation)
+   @OneToMany(() => DocumentationProve, prove => prove.documentation, { eager: true, cascade: true })
    proves: DocumentationProve[]
 }

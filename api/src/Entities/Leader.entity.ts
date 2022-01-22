@@ -9,7 +9,7 @@ export class Leader {
    @PrimaryColumn()
    id: number
 
-   @OneToOne(() => Tourist, { primary: true })
+   @OneToOne(() => Tourist, { primary: true, eager: true, cascade: true })
    @JoinColumn({name: 'id'})
    tourist: Tourist
 
@@ -19,7 +19,7 @@ export class Leader {
    @ManyToMany(() => Application)
    applications: Application[]
 
-   @OneToOne(() => LeaderLegitimation, legitimation => legitimation.leader, { cascade: ['insert', 'update'] })
+   @OneToOne(() => LeaderLegitimation, legitimation => legitimation.leader, { eager: true, cascade: true })
    legitimation: LeaderLegitimation
 
    @OneToMany(() => Documentation, doc => doc.checker)

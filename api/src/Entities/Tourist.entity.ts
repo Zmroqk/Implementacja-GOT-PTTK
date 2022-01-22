@@ -12,7 +12,7 @@ export class Tourist {
    @PrimaryColumn()
    id: number
 
-   @OneToOne(() => User, { primary: true })
+   @OneToOne(() => User, { primary: true, eager: true, cascade: true })
    @JoinColumn({ name: 'id' })
    user: User
 
@@ -38,6 +38,6 @@ export class Tourist {
    @OneToMany(() => Trip, trip => trip.tourist)
    trips: Trip[]
 
-   @OneToOne(() => PTTKBook, book => book.tourist)
+   @OneToOne(() => PTTKBook, book => book.tourist, { eager: true })
    book: PTTKBook
 }

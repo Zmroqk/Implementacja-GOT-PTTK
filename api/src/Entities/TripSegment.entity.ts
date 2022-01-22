@@ -17,9 +17,9 @@ export class TripSegment {
    @ManyToOne(() => TripPlan, plan => plan.tripSegments)
    plan: TripPlan
 
-   @ManyToOne(() => Segment, segment => segment.tripSegments)
+   @ManyToOne(() => Segment, segment => segment.tripSegments, { eager: true, cascade: ['insert', 'update'] })
    segment: Segment | null
 
-   @ManyToOne(() => UserSegment, segment => segment.tripSegments)
+   @ManyToOne(() => UserSegment, segment => segment.tripSegments, { eager: true, cascade: true })
    userSegment: UserSegment | null
 }

@@ -10,9 +10,9 @@ export class MountainRange {
    @Column({length: 255})
    name: string
 
-   @ManyToOne(() => MountainGroup, group => group.mountainRanges)
+   @ManyToOne(() => MountainGroup, group => group.mountainRanges, { cascade: ['insert', 'update']})
    mountainGroup: MountainGroup
 
-   @OneToMany(() => Waypoint, waypoint => waypoint.mountainRange)
+   @OneToMany(() => Waypoint, waypoint => waypoint.mountainRange, { cascade: true })
    waypoints: Waypoint[]
 }

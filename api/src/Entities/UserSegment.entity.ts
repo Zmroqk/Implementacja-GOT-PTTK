@@ -19,7 +19,7 @@ export class UserSegment {
    @Column()
    points: number
 
-   @ManyToOne(() => Tourist, tourist => tourist.createdSegments)
+   @ManyToOne(() => Tourist, tourist => tourist.createdSegments, { eager: true, cascade: ['insert', 'update']})
    author: Tourist
 
    @OneToMany(() => TripSegment, segment => segment.userSegment)
