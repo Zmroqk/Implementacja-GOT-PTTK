@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { Fragment, useEffect, useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, ProgressBar, Row } from 'react-bootstrap';
 import BadgeProgress from './BadgeProgress';
+import { Badge as BadgeEntity } from '../apiEntities/Badge.entity'
+
+interface IBadgeState {
+	badge: BadgeEntity;
+  points: number;
+}
 
 export default function Badge() {
+  const [data, setData] = useState<IBadgeState>({
+    badge: {} as BadgeEntity,
+    points: 0,
+	});
+
+  useEffect(() => {
+		fetch("http://localhost:3001/tourist/badge/ongoing/2")
+			.then((data) => data.json())
+			.then((jsonData) => setData(jsonData));
+	}, []);
+
+  const touristName = data.badge.tourist ? (
+    <h3>{data.badge.tourist.user.name} {data.badge.tourist.user.surname}</h3>
+  ) : null;
+
   return (
     <>
     <Container className="mt-4">
@@ -22,8 +43,8 @@ export default function Badge() {
           <img className="rounded" src="https://via.placeholder.com/150" alt="tourist-img"></img>
         </Col>
         <Col>
-          <h3>Tourist name</h3>
-          <h4>Tourist badge</h4>
+          {touristName}
+          {/* TODO tu moze byc aktualna odznaka */}
         </Col>
       </Row>
       <Row className="mt-4">
@@ -31,7 +52,16 @@ export default function Badge() {
           <h2>Wycieczki</h2>
         </Col>
         <Col className="col-lg-5">
-          <BadgeProgress points={244} pointsMax={360}/>
+          {
+            data.badge.type ? (
+              <BadgeProgress 
+              badgeName={data.badge.type.type}
+              badgeLevel={data.badge.level.level}
+              points={data.points}
+              pointsMax={240}
+              />
+            ) : null
+          }
         </Col>
         
       </Row>

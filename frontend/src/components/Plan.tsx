@@ -1,58 +1,60 @@
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import MountainGroup from "../apiEntities/MountainGroup.entity";
+import MountainRange from "../apiEntities/MountainRange.entity";
 import Waypoint from "../apiEntities/Waypoint.entity";
+import { Segment as SegmentEntity } from "../apiEntities/Segment.entity";
 
 interface IPlanState {
+	mountainGroups: MountainGroup[];
+	mountainRanges: MountainRange[];
 	waypoints: Waypoint[];
+	segments: SegmentEntity[];
 }
 
 interface IPlanFormState {
-	startPointId?: number;
+ 	startPointId?: number;
   endPointId?: number;
   viaPointsCount: number;
 }
 
 export default function Plan() {
+  const [data, setData] = useState<IPlanState>({
+		mountainGroups: [],
+		mountainRanges: [],
+		waypoints: [],
+		segments: [],
+	});
+
   const waypointStartRef = useRef<HTMLSelectElement>(null);
   const waypointEndRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/admin/segment/create")
-      .then((data) => data.json())
-      .then((jsonData) => {
-        setData(jsonData);
-        setFormData({
-          ...formData,
-          startPointId: jsonData.waypoints[0].id,
-          viaPointsCount: 0
-        } as IPlanFormState);
-      });
-  }, []);
-
-  const [data, setData] = useState<IPlanState>({
-    waypoints: []
-  });
+		fetch("http://localhost:3001/admin/segment/create")
+			.then((data) => data.json())
+			.then((jsonData) => {
+				setData(jsonData);
+			});
+	}, []);
 
   const [formData, setFormData] = useState<IPlanFormState>({
-    viaPointsCount: 0
+     viaPointsCount: 0,
   });
 
-  const waypointsOptions = data.waypoints.map((w) => (
-    <option key={w.id} value={w.id}>
-      {w.name}
+  const segmentsOptions = data.segments.map((s) => (
+    <option key={s.id} value={s.id}>
+      {s.name}
     </option>
   ))
 
-  console.log(formData.viaPointsCount);
-
-  const intermediateWaypoints = [];
+  const segmentsForms = [];
   for (var i = 0; i < formData.viaPointsCount; i += 1) {
-    intermediateWaypoints.push(
+    segmentsForms.push(
       <>
-        <Form.Group controlId='intermediate-${i}'>
-					<Form.Label>Punkt pośredni {i}</Form.Label>
+        <Form.Group controlId={"segment-" + i}>
+					<Form.Label>Odcinek {i + 1}</Form.Label>
             <Form.Select>
-              {waypointsOptions}
+              {segmentsOptions}
             </Form.Select>
 				</Form.Group>
       </>
@@ -65,15 +67,10 @@ export default function Plan() {
         <Col>
           <h2>Planowanie wycieczki</h2>
           <Form>
-            <Form.Group controlId="waypointStartId">
-              <Form.Label>Punkt startowy</Form.Label>
-              <Form.Select onChange={(e) => {
-                setFormData({
-                  ...formData,
-                  startPointId: Number.parseInt(e.currentTarget.value),
-                });
-              }}>
-                {waypointsOptions}
+            <Form.Group controlId="startSegmentId">
+            <Form.Label>Odcinek początkowy</Form.Label>
+              <Form.Select>
+                {segmentsOptions}
               </Form.Select>
             </Form.Group>
 
@@ -83,18 +80,30 @@ export default function Plan() {
                 ...formData,
                 viaPointsCount: formData.viaPointsCount + 1,
               })}>
-              Dodaj punkt pośredni
+              Dodaj kolejny odcinek
               </Button>
             </div>
 
-            {intermediateWaypoints}
+            <div>
+              <Button
+              onClick={() => {
+                if (formData.viaPointsCount > 0) {
+                  setFormData({
+                    ...formData,
+                    viaPointsCount: formData.viaPointsCount - 1,
+                  })
+                }
+              }}>
+              Usuń ostatni
+              </Button>
+            </div>
 
-            <Form.Group controlId="waypointEndId">
-              <Form.Label>Punkt końcowy</Form.Label>
-              <Form.Select>
-                {waypointsOptions}
-              </Form.Select>
-            </Form.Group>
+            {segmentsForms}
+
+            <Container>
+              <h4>Punkty GOT: ---</h4>
+            </Container>
+
             <Button type="submit">
               Utwórz plan wycieczki
             </Button>

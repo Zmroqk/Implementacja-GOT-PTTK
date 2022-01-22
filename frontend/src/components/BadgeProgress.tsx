@@ -2,22 +2,35 @@ import React from 'react';
 import { Row, Container, ProgressBar } from 'react-bootstrap';
 
 interface IBadgeProgressProps {
+    badgeName: string;
+    badgeLevel: string;
 	points: number;
     pointsMax: number;
 }
 
 export default function BadgeProgress(props: IBadgeProgressProps) {
+
+    let badgeImgPath = "https://via.placeholder.com/150"
+
+    if (props.badgeLevel == "Brązowa") {
+        badgeImgPath = "/mala_braz.png";
+    } else if (props.badgeLevel == "Srebrna") {
+        badgeImgPath = "/mala_srebr.png";
+    } else if (props.badgeLevel == "Złota") {
+        badgeImgPath = "/mala_zlota.png";
+    }
+
   return (
       <>
         <Container className="py-4 bg-light text-center">
             <Row>
                 <div>
-                    <img src="https://via.placeholder.com/150" alt="odznaka-img"></img>
+                <img src={badgeImgPath} alt="tourist-img"></img>
                 </div>
             </Row>
             <Row className="mt-4">
                 <h4>Aktualnie zdobywana odznaka:</h4>
-                <h4>GOT mała srebrna</h4>
+                <h4>GOT {props.badgeName} {props.badgeLevel}</h4>
             </Row>
             <Row className="mt-4">
                 <h4>Punkty GOT: {props.points}/{props.pointsMax}</h4>
