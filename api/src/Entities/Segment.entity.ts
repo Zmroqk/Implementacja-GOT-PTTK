@@ -9,6 +9,9 @@ export class Segment {
    @PrimaryGeneratedColumn()
    id: number
 
+   @Column({ length: 255 })
+   name: string
+
    @Column()
    points: number | null
 

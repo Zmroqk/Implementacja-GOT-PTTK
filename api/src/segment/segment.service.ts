@@ -47,6 +47,10 @@ export class SegmentService {
       if(!waypoint || !waypointEnd)
          throw new NotFoundException(`Waypoint with id: ${waypointFromId} not found`)
       const segment = new Segment()
+      segment.name = `${waypoint.name}-${waypointEnd.name}`
+      if(via.length > 0){
+         segment.name += ` via ${via}`
+      }
       segment.inPoland = inPoland
       segment.via = via
       segment.startPoint = waypoint
