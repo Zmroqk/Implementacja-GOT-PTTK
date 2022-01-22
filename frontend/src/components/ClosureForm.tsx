@@ -5,45 +5,43 @@ import Waypoint from "../apiEntities/Waypoint.entity";
 import { Segment as SegmentEntity } from "../apiEntities/Segment.entity";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Closure } from "../apiEntities/Closure.entity";
 
-interface ISegmentState {
+interface IClosureState {
 	mountainGroups: MountainGroup[];
 	mountainRanges: MountainRange[];
-	waypoints: Waypoint[];
 	segments: SegmentEntity[];
+    closures: Closure[];
 }
 
-interface ISegmentFormState {
+interface IClosureFormState {
 	mgId?: number;
 	mrId?: number;
-	wsId?: number;
-	weId?: number;
-	viaEnabled: boolean;
+	sId?: number;
 }
 
-interface ISegmentFormProps {
-	segmentId?: number;
+interface IClosureFormProps {
+	closureId?: number;
 }
 
-export function SegmentForm({ segmentId }: ISegmentFormProps) {
-	const [data, setData] = useState<ISegmentState>({
+export function ClosureForm({ closureId }: IClosureFormProps) {
+	const [data, setData] = useState<IClosureState>({
 		mountainGroups: [],
 		mountainRanges: [],
-		waypoints: [],
 		segments: [],
+        closures: [],
 	});
 
 	const mountainGroupRef = useRef<HTMLSelectElement>(null);
 	const mountainRangeRef = useRef<HTMLSelectElement>(null);
-	const waypointStartRef = useRef<HTMLSelectElement>(null);
-	const waypointEndRef = useRef<HTMLSelectElement>(null);
-	const viaRef = useRef<HTMLInputElement>(null);
-	const pointsFromRef = useRef<HTMLInputElement>(null);
-	const pointsToRef = useRef<HTMLInputElement>(null);
+    const segmentRef = useRef<HTMLSelectElement>(null);
+    const startDateRef = useRef<HTMLInputElement>(null);
+    const endDateRef = useRef<HTMLInputElement>(null);
+    const reasonRef = useRef<HTMLInputElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
-		fetch("http://localhost:3001/admin/segment/create")
+		fetch("http://localhost:3001/admin//closure/close")
 			.then((data) => data.json())
 			.then((jsonData) => {
 				setData(jsonData);
@@ -51,13 +49,13 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 					...formData,
 					mgId: jsonData.mountainGroups[0].id,
 					mrId: jsonData.mountainRanges[0].id,
-				} as ISegmentFormState);
+                    sId: jsonData.segments[0].id,
+				} as IClosureFormState);
 			});
 	}, []);
 
-	const [formData, setFormData] = useState<ISegmentFormState>({
-		viaEnabled: false,
-	} as ISegmentFormState);
+	const [formData, setFormData] = useState<IClosureFormState>({
+	} as IClosureFormState);
 	const mountainGroupsOptions = data.mountainGroups.map((mg) => (
 		<option key={mg.id} value={mg.id}>
 			{mg.name}
@@ -82,65 +80,27 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 			</option>
 		));
 
-	let waypointsSelects = null;
-	let pointsSelect = null;
+    let dateSelect = null;
+	let segmentSelect = null;
 	if (formData.mgId && formData.mrId) {
-		const waypoints = data.waypoints.filter(
-			(w) => w.mountainRange.id === formData.mrId
+		const segments = data.segments.filter(
+			(s) => s.mountainRange.id === formData.mrId
 		);
-		const waypointsOptions = waypoints.map((w) => (
-			<option key={w.id} value={w.id}>
-				{w.name}
+		const waypointsOptions = segments.map((s) => (
+			<option key={s.id} value={s.id}>
+				{s.startPoint.name} - {s.endPoint.name}
 			</option>
 		));
-		waypointsSelects = (
+		segmentSelect = (
 			<Fragment>
-				<Form.Group controlId="waypointStartId">
-					<Form.Label>Punkt startowy</Form.Label>
+				<Form.Group controlId="segmentId">
+					<Form.Label>Odcinek</Form.Label>
 					<Form.Select
-						ref={waypointStartRef}
+						ref={segmentRef}
 						onChange={(e) => {
 							setFormData({
 								...formData,
-								wsId: Number.parseInt(e.currentTarget.value),
-							});
-						}}
-					>
-						{waypointsOptions}
-					</Form.Select>
-				</Form.Group>
-				{formData.viaEnabled ? (
-					<Form.Group controlId="via">
-						<Form.Label>Punkt pośredni</Form.Label>
-						<Form.Control
-							ref={viaRef}
-							type="text"
-							placeholder="Wprowadź punkt pośredni"
-						/>
-					</Form.Group>
-				) : null}
-				<div>
-					<Button
-						onClick={() =>
-							setFormData({
-								...formData,
-								viaEnabled: !formData.viaEnabled,
-							})
-						}
-					>
-						{formData.viaEnabled
-							? "Usuń punkt pośredni"
-							: "Dodaj punkt pośredni"}
-					</Button>
-				</div>
-				<Form.Group controlId="waypointEndId">
-					<Form.Label>Punkt końcowy</Form.Label>
-					<Form.Select
-						ref={waypointEndRef}
-						onChange={(e) => {
-							setFormData({
-								...formData,
-								weId: Number.parseInt(e.currentTarget.value),
+								sId: Number.parseInt(e.currentTarget.value),
 							});
 						}}
 					>
@@ -149,29 +109,34 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 				</Form.Group>
 			</Fragment>
 		);
-		pointsSelect = (
-			<Fragment>
-				<label>Punktacja GOT</label>
-				<Form.Group controlId="pointsFromId">
-					<Form.Label>Punky Z DO</Form.Label>
+        dateSelect = (
+            <Fragment>
+                <Form.Group controlId="dateFromId">
+					<Form.Label>Data zamknięcia</Form.Label>
 					<FormControl
-						ref={pointsFromRef}
-						type="number"
+						ref={startDateRef}
+						type="date"
 						placeholder="Podaj liczbę punktow"
-						defaultValue="0"
 					/>
 				</Form.Group>
-				<Form.Group controlId="pointsToId">
-					<Form.Label>Punky DO Z</Form.Label>
+				<Form.Group controlId="dateToId">
+					<Form.Label>Data otwarcia</Form.Label>
 					<FormControl
-						ref={pointsToRef}
-						type="number"
+						ref={endDateRef}
+						type="date"
 						placeholder="Podaj liczbę punktow"
-						defaultValue="0"
 					/>
 				</Form.Group>
-			</Fragment>
-		)
+                <Form.Group controlId="reason">
+						<Form.Label>Powód zamknięcia</Form.Label>
+						<Form.Control
+							ref={reasonRef}
+							type="text"
+							placeholder="Podaj powód zamknięcia"
+						/>
+					</Form.Group>
+            </Fragment>
+        )
 	}
 
 	const navigate = useNavigate();
@@ -182,19 +147,16 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 			buttonRef.current.disabled = true;
 		}
 		if (
-			waypointStartRef.current &&
-			waypointEndRef.current &&
-			viaRef.current && 
-			pointsFromRef.current &&
-			pointsToRef.current
+			segmentRef.current &&
+			startDateRef.current &&
+			endDateRef.current &&
+            reasonRef.current
 		) {
 			const body = {
-				waypointFromId: Number.parseInt(waypointStartRef.current.value),
-				waypointEndId: Number.parseInt(waypointEndRef.current.value),
-				via: viaRef.current.value,
-				points: Number.parseInt(pointsFromRef.current.value),
-				pointsReverse: Number.parseInt(pointsToRef.current.value),
-				inPoland: false,
+				segmentFormId: Number.parseInt(segmentRef.current.value),
+				closedFrom: startDateRef.current.value,
+                closedTo: endDateRef.current.value,
+                reason: reasonRef.current.value,
 			};
 			fetch("http://localhost:3001/admin/segment/create", {
 				method: "POST",
@@ -204,9 +166,12 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 				},
 			}).then((res) => {
 				if (res.status == 200) {
-					navigate("/admin/segment")
+					navigate("/admin/closure")
 				}
             else {
+                if (buttonRef.current) {
+                    buttonRef.current.disabled = false;
+                }
                // TODO unlock button and do something
             }
 			});
@@ -247,10 +212,10 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 						{mountainRangesOptions}
 					</Form.Select>
 				</Form.Group>
-				{waypointsSelects}
-				{pointsSelect}
+				{segmentSelect}
+                {dateSelect}
 				<Button type="submit" ref={buttonRef}>
-					Stwórz nowy odcinek
+					Zamknij odcinek
 				</Button>
 			</Form>
 		</Container>
