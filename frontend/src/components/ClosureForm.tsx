@@ -83,9 +83,12 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
     let dateSelect = null;
 	let segmentSelect = null;
 	if (formData.mgId && formData.mrId) {
+		/*
 		const segments = data.segments.filter(
 			(s) => s.mountainRange.id === formData.mrId
 		);
+		*/
+		const segments = data.segments;
 		const waypointsOptions = segments.map((s) => (
 			<option key={s.id} value={s.id}>
 				{s.startPoint.name} - {s.endPoint.name}

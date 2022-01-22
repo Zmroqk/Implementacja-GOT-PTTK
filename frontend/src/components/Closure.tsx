@@ -4,13 +4,13 @@ import Container from 'react-bootstrap/esm/Container';
 import { Link } from 'react-router-dom';
 import MountainGroup from '../apiEntities/MountainGroup.entity';
 import MountainRange from '../apiEntities/MountainRange.entity';
-import { Closure } from '../apiEntities/Closure.entity';
+import { Closure as ClosureEntity } from '../apiEntities/Closure.entity';
 import SegmentEntity from '../apiEntities/Segment.entity';
 
 interface IClosureState {
   mountainGroups: MountainGroup[];
   mountainRanges: MountainRange[];
-  closures: Closure[];
+  closures: ClosureEntity[];
   segments: SegmentEntity[];
 }
 
