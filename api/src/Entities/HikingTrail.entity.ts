@@ -14,6 +14,6 @@ export class HikingTrail {
    @JoinTable()
    segments: Segment[]
 
-   @ManyToOne(() => Color, color => color.hikingTrails)
+   @ManyToOne(() => Color, color => color.hikingTrails, { eager: true, cascade: ['insert', 'update']})
    color: Color
 }

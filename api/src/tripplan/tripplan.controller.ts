@@ -21,7 +21,7 @@ export class TripPlanController {
 
    @Get()
    async getAllTripPlans(): Promise<TripPlan[]> {
-      return this.getAllTripPlans();
+      return this.tripPlanService.getAllTripPlans();
    }
 
    @Get('waypoints')

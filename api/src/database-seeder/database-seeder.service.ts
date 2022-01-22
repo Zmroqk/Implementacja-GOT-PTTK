@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
 import { Admin } from 'src/Entities/Admin.entity';
 import { Badge } from 'src/Entities/Badge.entity';
@@ -31,10 +31,11 @@ export class DatabaseSeederService {
       private mountainGroupRepository: Repository<MountainGroup>,
       @InjectRepository(BadgeLevel) private badgeLevelRepository: Repository<BadgeLevel>,
       @InjectRepository(BadgeType) private badgeTypeRepository: Repository<BadgeType>,
-      @InjectRepository(LeaderLegitimation) private legitimationRepository: Repository<LeaderLegitimation>,
    ) {}
 
    async seedDatabase() {
+      if(await this.userRepository.count() > 0)
+         return
       const badges = await this.seedBadges();
       const waypoints = await this.seedWaypoints();
       const mountainRanges = await this.seedMountainRanges(waypoints);

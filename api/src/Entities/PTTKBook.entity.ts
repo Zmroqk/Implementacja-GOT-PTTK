@@ -7,10 +7,10 @@ export class PTTKBook {
    @PrimaryGeneratedColumn()
    id: number
 
-   @OneToOne(() => Tourist, tourist => tourist.book)
+   @OneToOne(() => Tourist, tourist => tourist.book, { cascade: true })
    @JoinColumn()
    tourist: Tourist
 
-   @OneToMany(() => Documentation, doc => doc.book)
+   @OneToMany(() => Documentation, doc => doc.book, { cascade: true })
    documentations: Documentation[]
 }

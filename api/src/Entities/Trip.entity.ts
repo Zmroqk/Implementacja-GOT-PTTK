@@ -18,15 +18,15 @@ export class Trip {
    @Column({type: 'date'})
    endDate: Date
 
-   @ManyToOne(() => TripPlan, plan => plan.trips)
+   @ManyToOne(() => TripPlan, plan => plan.trips, { eager: true, cascade: ['insert', 'update'] })
    plan: TripPlan
 
-   @ManyToOne(() => Tourist, tourist => tourist.trips)
+   @ManyToOne(() => Tourist, tourist => tourist.trips, { eager: true, cascade: ['insert', 'update'] })
    tourist: Tourist
 
-   @ManyToOne(() => Badge, badge => badge.trips)
+   @ManyToOne(() => Badge, badge => badge.trips, { eager: true, cascade: ['insert', 'update'] })
    badge: Badge
 
-   @OneToOne(() => Documentation, doc => doc.trip)
+   @OneToOne(() => Documentation, doc => doc.trip, { cascade: true })
    documentation: Documentation | null
 }

@@ -12,6 +12,6 @@ export class Closure {
    @Column({type: 'date'})
    closedTo: Date
 
-   @ManyToOne(() => Segment, segment => segment.closures)
+   @ManyToOne(() => Segment, segment => segment.closures, { eager: true, cascade: ['insert', 'update']})
    segment: Segment
 }
