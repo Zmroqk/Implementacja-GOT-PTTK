@@ -13,7 +13,7 @@ export class Waypoint {
    @Column({ type: 'float' })
    height: number | null
 
-   @ManyToOne(() => MountainRange, range => range.waypoints)
+   @ManyToOne(() => MountainRange, range => range.waypoints, { eager: true, cascade: ['insert', 'update'] })
    mountainRange: MountainRange
 
    @OneToMany(() => Segment, segment => segment.startPoint)

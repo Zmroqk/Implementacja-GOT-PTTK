@@ -11,7 +11,7 @@ export class Application {
    @PrimaryGeneratedColumn()
    id: number
 
-   @ManyToOne(() => ApplicationType, type => type.applications)
+   @ManyToOne(() => ApplicationType, type => type.applications, { eager: true, cascade: ['insert', 'update'] })
    type: ApplicationType
 
    @Column({ length: 255 })
@@ -26,7 +26,7 @@ export class Application {
    @JoinTable()
    requestedMountainGroups: MountainGroup[]
 
-   @ManyToOne(() => Tourist, tourist => tourist.applications)
+   @ManyToOne(() => Tourist, tourist => tourist.applications, { eager: true })
    applicant: Tourist
 
    @ManyToMany(() => Leader)

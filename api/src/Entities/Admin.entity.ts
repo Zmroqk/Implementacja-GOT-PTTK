@@ -6,7 +6,7 @@ export class Admin {
    @PrimaryColumn()
    id: number
 
-   @OneToOne(() => User, { primary: true })
+   @OneToOne(() => User, { primary: true, eager: true, cascade: true })
    @JoinColumn({name: 'id'})
    user: User
 }

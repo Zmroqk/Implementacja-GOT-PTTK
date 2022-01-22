@@ -21,13 +21,13 @@ export class Segment {
    @Column()
    inPoland: boolean
 
-   @ManyToOne(() => Waypoint, point => point.segments)
+   @ManyToOne(() => Waypoint, point => point.segments, { eager: true, cascade: ['insert', 'update'] })
    startPoint: Waypoint
 
-   @ManyToOne(() => Waypoint, point => point.segments)
+   @ManyToOne(() => Waypoint, point => point.segments, { eager: true, cascade: ['insert', 'update'] })
    endPoint: Waypoint
 
-   @ManyToMany(() => HikingTrail, trail => trail.segments)
+   @ManyToMany(() => HikingTrail, trail => trail.segments, { cascade: ['insert', 'update'] })
    hikingTrails: HikingTrail[]
 
    @OneToMany(() => Closure, closure => closure.segment)

@@ -15,13 +15,13 @@ export class Badge {
    @OneToMany(() => Trip, trip => trip.badge)
    trips: Trip[]
 
-   @ManyToOne(() => BadgeType, type => type.badges)
+   @ManyToOne(() => BadgeType, type => type.badges, { eager: true, cascade: ['insert', 'update'] })
    type: BadgeType
 
-   @ManyToOne(() => BadgeLevel, level => level.badges)
+   @ManyToOne(() => BadgeLevel, level => level.badges, { eager: true, cascade: ['insert', 'update'] })
    level: BadgeLevel
 
-   @ManyToOne(() => Tourist, tourist => tourist.badges, { nullable: true })
+   @ManyToOne(() => Tourist, tourist => tourist.badges, { nullable: true, eager: true, cascade: ['insert', 'update'] })
    @JoinColumn([{name: "touristId", referencedColumnName: "id"}])
    tourist: Tourist
 
