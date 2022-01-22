@@ -14,7 +14,7 @@ export class RequiredDataCreateSegmentData {
    
    @ApiProperty({type: [Waypoint]})
    waypoints: Waypoint[]
-
+  
    @ApiProperty({type: [Segment]})
    segments: Segment[]
 }
