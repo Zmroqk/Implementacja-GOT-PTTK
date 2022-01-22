@@ -14,6 +14,7 @@ import {
     Link,
     useNavigate
   } from "react-router-dom";
+import { SegmentForm } from './SegmentForm';
 
 
 export default function Admin() {
@@ -78,6 +79,7 @@ export default function Admin() {
                   <Route path="/leader" element={<Leader />} />
                   <Route path="/closure" element={<Closure />} />
                   <Route path="/segment" element={<Segment />} />
+                  <Route path="/segment/:id" element={<SegmentForm />} />
               </Routes>
           </div>
           </div>
