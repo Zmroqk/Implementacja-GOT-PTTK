@@ -2,11 +2,11 @@ import React from 'react';
 import { Row, Container, ProgressBar } from 'react-bootstrap';
 
 interface IBadgeProgressProps {
-	userId?: number;
+	points: number;
+    pointsMax: number;
 }
 
-
-export default function BadgeProgress({ userId }: IBadgeProgressProps) {
+export default function BadgeProgress(props: IBadgeProgressProps) {
   return (
       <>
         <Container className="py-4 bg-light text-center">
@@ -20,9 +20,11 @@ export default function BadgeProgress({ userId }: IBadgeProgressProps) {
                 <h4>GOT mała srebrna</h4>
             </Row>
             <Row className="mt-4">
-                <h4>Punkty GOT: 214/360</h4>
+                <h4>Punkty GOT: {props.points}/{props.pointsMax}</h4>
                 <div>
-                    <ProgressBar variant="warning" now={82}/>
+                    <ProgressBar 
+                    variant={props.points >= props.pointsMax ? "success" : "warning"}
+                    now={100 * props.points / props.pointsMax} />
                 </div>
                 
             </Row>
@@ -41,9 +43,6 @@ export default function BadgeProgress({ userId }: IBadgeProgressProps) {
             <Row className="mt-4">
                 <h5>Aktualny sezon: 01/01/2022 - 31/12/2022</h5>
             </Row>
-            
-            
-            
         </Container>
       </>
   )

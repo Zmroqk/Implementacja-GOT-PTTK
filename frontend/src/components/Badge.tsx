@@ -31,7 +31,7 @@ export default function Badge() {
           <h2>Wycieczki</h2>
         </Col>
         <Col className="col-lg-5">
-          <BadgeProgress />
+          <BadgeProgress points={244} pointsMax={360}/>
         </Col>
         
       </Row>
