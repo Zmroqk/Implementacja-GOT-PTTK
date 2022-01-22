@@ -11,7 +11,7 @@ interface IClosureState {
 	mountainGroups: MountainGroup[];
 	mountainRanges: MountainRange[];
 	segments: SegmentEntity[];
-    closures: Closure[];
+	closures: Closure[];
 }
 
 interface IClosureFormState {
@@ -29,19 +29,19 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 		mountainGroups: [],
 		mountainRanges: [],
 		segments: [],
-        closures: [],
+		closures: [],
 	});
 
 	const mountainGroupRef = useRef<HTMLSelectElement>(null);
 	const mountainRangeRef = useRef<HTMLSelectElement>(null);
-    const segmentRef = useRef<HTMLSelectElement>(null);
-    const startDateRef = useRef<HTMLInputElement>(null);
-    const endDateRef = useRef<HTMLInputElement>(null);
-    const reasonRef = useRef<HTMLInputElement>(null);
+	const segmentRef = useRef<HTMLSelectElement>(null);
+	const startDateRef = useRef<HTMLInputElement>(null);
+	const endDateRef = useRef<HTMLInputElement>(null);
+	const reasonRef = useRef<HTMLInputElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
-		fetch("http://localhost:3001/admin//closure/close")
+		fetch("http://localhost:3001/admin/segment/create")
 			.then((data) => data.json())
 			.then((jsonData) => {
 				setData(jsonData);
@@ -49,13 +49,14 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 					...formData,
 					mgId: jsonData.mountainGroups[0].id,
 					mrId: jsonData.mountainRanges[0].id,
-                    sId: jsonData.segments[0].id,
+					sId: jsonData.segments[0].id,
 				} as IClosureFormState);
 			});
 	}, []);
 
-	const [formData, setFormData] = useState<IClosureFormState>({
-	} as IClosureFormState);
+	const [formData, setFormData] = useState<IClosureFormState>(
+		{} as IClosureFormState
+	);
 	const mountainGroupsOptions = data.mountainGroups.map((mg) => (
 		<option key={mg.id} value={mg.id}>
 			{mg.name}
@@ -80,7 +81,7 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 			</option>
 		));
 
-    let dateSelect = null;
+	let dateSelect = null;
 	let segmentSelect = null;
 	if (formData.mgId && formData.mrId) {
 		/*
@@ -112,9 +113,9 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 				</Form.Group>
 			</Fragment>
 		);
-        dateSelect = (
-            <Fragment>
-                <Form.Group controlId="dateFromId">
+		dateSelect = (
+			<Fragment>
+				<Form.Group controlId="dateFromId">
 					<Form.Label>Data zamknięcia</Form.Label>
 					<FormControl
 						ref={startDateRef}
@@ -130,16 +131,16 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 						placeholder="Podaj liczbę punktow"
 					/>
 				</Form.Group>
-                <Form.Group controlId="reason">
-						<Form.Label>Powód zamknięcia</Form.Label>
-						<Form.Control
-							ref={reasonRef}
-							type="text"
-							placeholder="Podaj powód zamknięcia"
-						/>
-					</Form.Group>
-            </Fragment>
-        )
+				<Form.Group controlId="reason">
+					<Form.Label>Powód zamknięcia</Form.Label>
+					<Form.Control
+						ref={reasonRef}
+						type="text"
+						placeholder="Podaj powód zamknięcia"
+					/>
+				</Form.Group>
+			</Fragment>
+		);
 	}
 
 	const navigate = useNavigate();
@@ -153,30 +154,29 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 			segmentRef.current &&
 			startDateRef.current &&
 			endDateRef.current &&
-            reasonRef.current
+			reasonRef.current
 		) {
 			const body = {
-				segmentFormId: Number.parseInt(segmentRef.current.value),
-				closedFrom: startDateRef.current.value,
-                closedTo: endDateRef.current.value,
-                reason: reasonRef.current.value,
+				segmentId: Number.parseInt(segmentRef.current.value),
+				dateStart: startDateRef.current.value,
+				dateEnd: endDateRef.current.value,
+				reason: reasonRef.current.value,
 			};
-			fetch("http://localhost:3001/admin/segment/create", {
+			fetch("http://localhost:3001/admin/closure/close", {
 				method: "POST",
 				body: JSON.stringify(body),
 				headers: {
 					"Content-Type": "application/json",
 				},
 			}).then((res) => {
-				if (res.status == 200) {
-					navigate("/admin/closure")
+				if (res.status == 200 || res.status == 201) {
+					navigate("/admin/closure");
+				} else {
+					if (buttonRef.current) {
+						buttonRef.current.disabled = false;
+					}
+					// TODO unlock button and do something
 				}
-            else {
-                if (buttonRef.current) {
-                    buttonRef.current.disabled = false;
-                }
-               // TODO unlock button and do something
-            }
 			});
 		}
 	};
@@ -216,7 +216,7 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 					</Form.Select>
 				</Form.Group>
 				{segmentSelect}
-                {dateSelect}
+				{dateSelect}
 				<Button type="submit" ref={buttonRef}>
 					Zamknij odcinek
 				</Button>

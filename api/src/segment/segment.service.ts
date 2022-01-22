@@ -57,6 +57,6 @@ export class SegmentService {
       segment.endPoint = waypointEnd
       segment.points = points
       segment.pointsReverse = pointsReverse
-      return this.waypointRepository.save(segment)   
+      return this.segmentRepository.save(segment)   
    }
 }

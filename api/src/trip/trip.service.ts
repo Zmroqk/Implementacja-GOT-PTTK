@@ -56,7 +56,7 @@ export class TripService {
       documentation.book = tourist.book
       documentation.trip = newTrip
       // CHANGE zmiana koncepcji
-      if(isLeaderPresent){     
+      if(isLeaderPresent){
          documentation.status = await this.documentationStatusRepository.findOne({
             status: "Verified"
          })

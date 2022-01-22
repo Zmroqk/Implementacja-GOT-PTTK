@@ -15,6 +15,7 @@ import {
     useNavigate
   } from "react-router-dom";
 import { SegmentForm } from './SegmentForm';
+import { ClosureForm } from './ClosureForm';
 
 
 export default function Admin() {
@@ -78,6 +79,7 @@ export default function Admin() {
               <Routes>
                   <Route path="/leader" element={<Leader />} />
                   <Route path="/closure" element={<Closure />} />
+                  <Route path="/closure/new" element={<ClosureForm />} />
                   <Route path="/segment" element={<Segment />} />
                   <Route path="/segment/:id" element={<SegmentForm />} />
               </Routes>

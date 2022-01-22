@@ -183,15 +183,14 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 		}
 		if (
 			waypointStartRef.current &&
-			waypointEndRef.current &&
-			viaRef.current && 
+			waypointEndRef.current && 
 			pointsFromRef.current &&
 			pointsToRef.current
 		) {
 			const body = {
 				waypointFromId: Number.parseInt(waypointStartRef.current.value),
 				waypointEndId: Number.parseInt(waypointEndRef.current.value),
-				via: viaRef.current.value,
+				via: viaRef.current ? viaRef.current.value : "",
 				points: Number.parseInt(pointsFromRef.current.value),
 				pointsReverse: Number.parseInt(pointsToRef.current.value),
 				inPoland: false,
@@ -203,7 +202,7 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 					"Content-Type": "application/json",
 				},
 			}).then((res) => {
-				if (res.status == 200) {
+				if (res.status == 200 || res.status == 201) {
 					navigate("/admin/segment")
 				}
             else {
