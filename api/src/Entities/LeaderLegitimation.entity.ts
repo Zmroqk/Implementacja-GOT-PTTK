@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, JoinColumn, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Leader } from "./Leader.entity";
 import { MountainGroup } from "./MountainGroup.entity";
 
@@ -11,6 +11,7 @@ export class LeaderLegitimation {
    @JoinColumn()
    leader: Leader
 
-   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.legitimations)
+   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.legitimations, { cascade: ['insert', 'update' ]})
+   @JoinTable()
    mountainGroups: MountainGroup[]
 }

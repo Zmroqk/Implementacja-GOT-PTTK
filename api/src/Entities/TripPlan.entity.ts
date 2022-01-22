@@ -1,6 +1,7 @@
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Tourist } from "./Tourist.entity";
 import { Trip } from "./Trip.entity";
+import { TripSegment } from "./TripSegment.entity";
 
 @Entity()
 export class TripPlan {
@@ -24,4 +25,7 @@ export class TripPlan {
 
    @OneToMany(() => Trip, trip => trip.plan)
    trips: Trip[]
+
+   @OneToMany(() => TripSegment, tripSegment => tripSegment.plan)
+   tripSegments: TripSegment[]
 }

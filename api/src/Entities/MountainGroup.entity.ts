@@ -1,4 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Application } from "./Application.entity";
 import { LeaderLegitimation } from "./LeaderLegitimation.entity";
 import { MountainRange } from "./MountainRange.entity";
 
@@ -11,9 +12,12 @@ export class MountainGroup {
    name: string
 
    @ManyToMany(() => LeaderLegitimation, legitimation => legitimation.mountainGroups)
-   @JoinTable()
    legitimations: LeaderLegitimation[]
 
    @OneToMany(() => MountainRange, range => range.mountainGroup)
    mountainRanges: MountainRange[]
+
+   // CHANGE added connection to applications
+   @ManyToMany(() => Application, application => application.requestedMountainGroups)
+   applications: Application[]
 }
