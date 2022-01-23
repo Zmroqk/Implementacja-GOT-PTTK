@@ -34,8 +34,8 @@ export class ClosureController {
          throw new BadRequestException('End date cannot be before start date');
       return this.closureService.createClosure(
          closureData.segmentId,
-         closureData.dateStart,
-         closureData.dateEnd,
+         new Date(closureData.dateStart),
+         new Date(closureData.dateEnd),
          closureData.reason,
       );
    }

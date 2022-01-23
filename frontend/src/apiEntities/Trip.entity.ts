@@ -1,6 +1,7 @@
 import { Badge } from "./Badge.entity";
 import { Tourist } from "./Tourist.entity";
 import { TripPlan } from "./TripPlan.entity";
+import Documentation from "./Documentation.entity";
 
 export interface Trip {
    id: number
@@ -10,5 +11,5 @@ export interface Trip {
    plan: TripPlan
    tourist: Tourist
    badge: Badge
-   // documentation: Documentation | null
+   documentation: Documentation | null
 }

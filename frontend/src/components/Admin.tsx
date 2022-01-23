@@ -16,7 +16,7 @@ import {
   } from "react-router-dom";
 import { SegmentForm } from './SegmentForm';
 import { ClosureForm } from './ClosureForm';
-import { Leaderform } from './LeaderForm';
+import { LeaderForm } from './LeaderForm';
 
 
 export default function Admin() {
@@ -83,7 +83,7 @@ export default function Admin() {
                   <Route path="/closure/new" element={<ClosureForm />} />
                   <Route path="/segment" element={<Segment />} />
                   <Route path="/segment/:id" element={<SegmentForm />} />
-                  <Route path="/leader/:id" element={<Leaderform />} />
+                  <Route path="/leader/:id" element={<LeaderForm />} />
               </Routes>
           </div>
           </div>

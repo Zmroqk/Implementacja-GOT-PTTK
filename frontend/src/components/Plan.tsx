@@ -97,11 +97,11 @@ export default function Plan() {
                      <Form.Label>Odcinek {i == 0 ? "początkowy" : i + 1}</Form.Label>
                   </Col>
                   <Col className="col-md-auto">
-                     {/* TODO Rozjezdza sie calkowicie ze stanem przy usuwaniu */}
+                     {/* TODO Rozjezdza sie ze stanem przy usuwaniu */}
                      <Form.Check
                         type="switch"
                         label="Kierunek przeciwny"
-                        value={Number(s.isReverse)}
+                        checked={s.isReverse}
                         onChange={() => handleReverseToggled(i)}
                      />
                   </Col>
@@ -132,6 +132,11 @@ export default function Plan() {
 			</Fragment>
 		);
 	});
+
+   const gotPointsSum = formInputs.map((s) => {
+      const segment = data.segments.find((seg) => seg.id == s.segmentId);
+      return s.isReverse ? segment?.pointsReverse : segment?.points;
+   }).reduce((prev, next) => prev && next ? prev + next : 0);
 
    const navigate = useNavigate();
 
@@ -185,13 +190,14 @@ export default function Plan() {
                      />
                   </Form.Group>
 
-						<Button className="float-end" type="submit"  ref={buttonRef}>
+						<Button type="submit"  ref={buttonRef}>
                      Utwórz plan wycieczki
                   </Button>
 					</Form>
 				</Col>
-
             </Row>
+
+            <h4 className="float-end">Przewidywana punktacja GOT: {gotPointsSum}</h4>
 			</Container>
 		</Fragment>
 	);

@@ -6,6 +6,9 @@ interface IBadgeProgressProps {
     badgeLevel: string;
 	points: number;
     pointsMax: number;
+    inPolandRatio: number;
+    mountainRangesCount: number;
+    maxRangesCount: number;
 }
 
 export default function BadgeProgress(props: IBadgeProgressProps) {
@@ -42,15 +45,17 @@ export default function BadgeProgress(props: IBadgeProgressProps) {
                 
             </Row>
             <Row className="mt-4">
-                <h4>Pasma górskie: 2/2</h4>                
+                <h4>Pasma górskie: {props.mountainRangesCount}/{props.maxRangesCount}</h4>                
                 <div>
-                    <ProgressBar variant="success" now={100}/>
+                    <ProgressBar
+                    variant={props.mountainRangesCount >= props.maxRangesCount ? "success" : "warning"}
+                    now={Math.min(100 * props.mountainRangesCount / props.maxRangesCount, 100)} />
                 </div>
             </Row>
             <Row className="mt-4">
-                <h4>Stosunek szlaków po stronie polskiej: 79%</h4>                
+                <h4>Stosunek szlaków po stronie polskiej: {Math.trunc(100 * props.inPolandRatio)}%</h4>                
                 <div>
-                    <ProgressBar variant="success" now={79}/>
+                    <ProgressBar variant={props.inPolandRatio > 50.0 ? "success" : "warning"} now={100 * props.inPolandRatio}/>
                 </div>
             </Row>
             <Row className="mt-4">

@@ -10,6 +10,8 @@ import { TripSegment } from "../apiEntities/TripSegment.entity";
 interface IBadgeState {
 	badge: BadgeEntity;
   points: number;
+  inPolandRatio: number;
+  mountainRangesCount: number;
 }
 
 interface ITripData {
@@ -20,10 +22,13 @@ export default function Badge() {
   const [data, setData] = useState<IBadgeState>({
     badge: {} as BadgeEntity,
     points: 0,
+    inPolandRatio: 0.0,
+    mountainRangesCount: 0,
 	});
 
   const [tripData, setTripData] = useState<TripPlan[]>([]);
 
+  // TODO - hardcoded user id
   useEffect(() => {
 		fetch("http://localhost:3001/tourist/badge/ongoing/2")
 			.then((data) => data.json())
@@ -95,6 +100,9 @@ export default function Badge() {
               badgeLevel={data.badge.level.level}
               points={data.points}
               pointsMax={240}
+              inPolandRatio={data.inPolandRatio}
+              mountainRangesCount={data.mountainRangesCount}
+              maxRangesCount={2}
               />
             ) : null
           }

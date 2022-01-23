@@ -74,7 +74,7 @@ export default function Closure() {
 										new Date(cl.closedFrom) <= new Date(Date.now())
 								)
 								.map((cl) => (
-									<ListGroup.Item key={`closure-item-${cl.id}`}>
+									<ListGroup.Item action key={`closure-item-${cl.id}`}>
 										{cl.segment.name} {cl.closedFrom} {cl.closedTo}{" "}
 										<Button onClick={() => openHandler(cl.id)}>
 											Otwórz odcinek

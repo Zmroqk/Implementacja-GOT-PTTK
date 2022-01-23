@@ -101,7 +101,7 @@ export default function Leader() {
 								)}
 							</p>
 						</Card.Text>
-						<Link to="/admin/leader/">
+						<Link to={`/admin/leader/${l.id}`}>
 							<Button variant="primary">Edytuj</Button>
 						</Link>
 					</Card.Body>

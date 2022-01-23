@@ -4,7 +4,6 @@ import LeaderLegitimation from "./LeaderLegitimation.entity";
 import Documentation from "./Documentation.entity";
 
 export interface Leader {
-
    id: number
    tourist: Tourist
    nominateDate: Date

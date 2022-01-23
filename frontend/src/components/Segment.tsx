@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Container, Button, ListGroup } from "react-bootstrap";
+import { Container, Button, ListGroup, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
@@ -35,14 +35,20 @@ export default function Segment() {
 		<ListGroup key={mg.id}>
 			<ListGroup.Item>{mg.name}</ListGroup.Item>
 			{mg.mountainRanges.map((mr) => (
-				<ListGroup.Item
-					key={`item-${mr.id}}`}
-					onClick={(e) => {
-						setSelectedRange(mr);
-					}}
-				>
-					{mr.name}
-				</ListGroup.Item>
+            <Row>
+               <Col xs={1}/>
+               <Col xs={10}>
+                  <ListGroup.Item action
+                     key={`item-${mr.id}}`}
+                     onClick={(e) => {
+                        setSelectedRange(mr);
+                     }}
+                  >
+                     {mr.name}
+                  </ListGroup.Item>
+               </Col>             
+               <Col xs={1}/>
+            </Row>		
 			))}
 		</ListGroup>
 	));
@@ -58,11 +64,11 @@ export default function Segment() {
 	});
 
 	const segments = filteredSegments.map((seg) => (
-		<ListGroup.Item>
-			<Link to={`/admin/segment/${seg.id}`}>
+      <Link to={`/admin/segment/${seg.id}`} style={{textDecoration: 'none'}}>
+		   <ListGroup.Item action>			
 				{seg.startPoint.name}-{seg.endPoint.name}
-			</Link>
-		</ListGroup.Item>
+		   </ListGroup.Item>
+      </Link>
 	));
 	return (
 		<Fragment>
