@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsDateString, IsNumber, IsString, MaxLength } from "class-validator"
+import { IsDate, IsDateString, IsNumber, IsString, MaxLength } from "class-validator"
 
 export class CreateClosureDto {
    @ApiProperty()
@@ -8,11 +8,11 @@ export class CreateClosureDto {
 
    @ApiProperty()
    @IsDateString()
-   dateStart: Date
+   dateStart: Date | string
 
    @ApiProperty()
    @IsDateString()
-   dateEnd: Date
+   dateEnd: Date | string
 
    @ApiProperty()
    @IsString()

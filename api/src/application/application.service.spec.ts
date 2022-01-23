@@ -6,10 +6,11 @@ import { Leader } from 'src/Entities/Leader.entity';
 import { LeaderLegitimation } from 'src/Entities/LeaderLegitimation.entity';
 import { LeaderService } from 'src/leader/leader.service';
 import { seedDatabase, TypeOrmTestingModule } from 'src/typeorm.testing.module';
-import { getConnection, Repository } from 'typeorm';
+import { Connection, getConnection, Repository } from 'typeorm';
 import { ApplicationService } from './application.service';
 
 describe('ApplicationService', () => {
+   let connection: Connection;
    jest.setTimeout(30000);
    let service: ApplicationService;
    let applications: Application[];
@@ -21,8 +22,7 @@ describe('ApplicationService', () => {
       }).compile();
 
       service = module.get<ApplicationService>(ApplicationService);
-      const connection = await getConnection();
-      const applicationRepository = connection.getRepository(Application);
+      connection = await getConnection();
       data = await seedDatabase(connection);
       applications = data.applications.map(ap => ({ ...ap }))
       applications.forEach(er => {
@@ -57,4 +57,8 @@ describe('ApplicationService', () => {
       expect(response.id).toBe(applications[2].id)
       expect(response.status).toBe(ApplicationStatus.Declined)
    });
+
+   afterAll(async () => {
+      await connection.close()
+   })
 });

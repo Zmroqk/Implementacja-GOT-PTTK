@@ -466,7 +466,7 @@ async function seedApplications(
  * ]
  * ```
  */
-export async function seedDatabase(connection: Connection) {
+export async function seedDatabase(connection: Connection): Promise<SeedDatabaseResponse> {
    const badges = await seedBadges(
       connection.getRepository(BadgeType),
       connection.getRepository(BadgeLevel),
@@ -499,5 +499,20 @@ export async function seedDatabase(connection: Connection) {
       mountainGroups,
       connection.getRepository(Application),
    );
-   return { users, mountainGroups, mountainRanges, waypoints, badges, types, applications };
+   return { users, mountainGroups, mountainRanges, waypoints, badges, types, applications } as SeedDatabaseResponse;
+}
+
+export class SeedDatabaseResponse {
+   users: {
+      users: User[],
+      admin: Admin,
+      leaders: Leader[],
+      tourists: Tourist[]
+   }
+   mountainGroups: MountainGroup[]
+   mountainRanges: MountainRange[]
+   waypoints: Waypoint[]
+   badges: Badge[]
+   types: ApplicationType[]
+   applications: Application[]
 }

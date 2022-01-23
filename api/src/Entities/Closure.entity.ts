@@ -12,8 +12,6 @@ export class Closure {
    @Column({ type: 'date'})
    closedTo: Date
 
-   
-
    @Column({length: 255, nullable: true })
    reason: string | null
 

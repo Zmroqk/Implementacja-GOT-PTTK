@@ -185,11 +185,7 @@ export default function Plan() {
                      />
                   </Form.Group>
 
-                  <Container>
-							<h5>Punkty GOT: ---</h5>
-						</Container>
-
-						<Button type="submit"  ref={buttonRef}>
+						<Button className="float-end" type="submit"  ref={buttonRef}>
                      Utwórz plan wycieczki
                   </Button>
 					</Form>

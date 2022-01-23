@@ -1,12 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { TripService } from 'src/trip/trip.service';
+import { TypeOrmTestingModule } from 'src/typeorm.testing.module';
 import { TouristService } from './tourist.service';
 
 describe('TouristService', () => {
   let service: TouristService;
-
-  beforeEach(async () => {
+  jest.setTimeout(30000);
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TouristService],
+      imports: [...TypeOrmTestingModule()],
+      providers: [TouristService, TripService],
     }).compile();
 
     service = module.get<TouristService>(TouristService);

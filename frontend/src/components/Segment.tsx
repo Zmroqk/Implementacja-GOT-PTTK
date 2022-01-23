@@ -56,7 +56,7 @@ export default function Segment() {
 		}
 		return false;
 	});
-	console.log(data);
+
 	const segments = filteredSegments.map((seg) => (
 		<ListGroup.Item>
 			<Link to={`/admin/segment/${seg.id}`}>

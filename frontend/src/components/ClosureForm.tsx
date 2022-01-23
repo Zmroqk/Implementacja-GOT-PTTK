@@ -67,7 +67,6 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 		const mountainGroup = data.mountainGroups.find(
 			(mg) => mg.id == formData.mgId
 		);
-		console.log(mountainGroup);
 		if (mountainGroup)
 			mountainRangesOptions = mountainGroup.mountainRanges.map((mr) => (
 				<option key={mr.id} value={mr.id}>
