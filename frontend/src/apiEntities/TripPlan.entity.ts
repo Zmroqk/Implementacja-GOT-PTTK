@@ -1,5 +1,6 @@
 import { Tourist } from "./Tourist.entity";
 import { Trip } from "./Trip.entity";
+import { TripSegment } from "./TripSegment.entity";
 
 export interface TripPlan {
    id: number
@@ -9,5 +10,5 @@ export interface TripPlan {
    author: Tourist
    tourists: Tourist[]
    trips: Trip[]
-   // tripSegments: TripSegment[]
+   tripSegments: TripSegment[]
 }
