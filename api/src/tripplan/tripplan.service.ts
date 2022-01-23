@@ -46,10 +46,10 @@ export class TripPlanService {
       description: string,
       segmentsDtos: SegmentDto[],
    ): Promise<TripPlan> {
-      const segments = segmentsDtos.filter((seg) => !seg.isUserSegment)
-      const userSegments = segmentsDtos.filter((seg) => seg.isUserSegment)
+      const segments = segmentsDtos.filter((seg) => !seg.isUserSegment).flat()
+      const userSegments = segmentsDtos.filter((seg) => seg.isUserSegment).flat()
       const actualSegments = await this.segmentRepository.find({
-         relations: ["startPoint", "endPoints"],
+         relations: ["startPoint", "endPoint"],
          where: {
             id: In(segments.map((seg) => seg.id)),
          },
@@ -64,11 +64,10 @@ export class TripPlanService {
       if (!user) return null;
       tripPlan.author = user;
       tripPlan.description = description;
-      
+
       const tripSegments = actualSegments.map((seg) => {
          const segmentDto = segments.find(segDto => segDto.id == seg.id)
          const tripSegment = new TripSegment();
-         tripSegment.plan = tripPlan;
          tripSegment.segment = seg;
          tripSegment.consecutiveNumber = segmentDto.orderNumber
          if(segmentDto.reverse)
@@ -81,7 +80,6 @@ export class TripPlanService {
       const userTripSegments = userActualSegments.map((seg) => {
          const segmentDto = segments.find(segDto => segDto.id == seg.id)
          const tripSegment = new TripSegment();
-         tripSegment.plan = tripPlan;
          tripSegment.userSegment = seg;
          tripSegment.consecutiveNumber = segmentDto.orderNumber
          tripSegment.direction = seg.description
@@ -100,7 +98,7 @@ export class TripPlanService {
          else if (seg.userSegment){
             return seg.userSegment.points
          }
-      }).reduce((acc, curr) => acc += curr)
+      }).reduce((acc, curr) => acc += curr, 0)
       const databaseTripPlan = await this.tripPlansRepository.save(tripPlan)
       return databaseTripPlan
    }

@@ -24,10 +24,13 @@ export class TouristService {
 
    async getOngoingBadge(userId: number): Promise<GetOngoingBadgeResponse> {
       const badge = await this.badgeRepository.findOne({
-         tourist: {
-            id: userId
-         },
-         receivedDate: IsNull(),
+         relations: ['trips'],
+         where: {
+            tourist: {
+               id: userId
+            },
+            receivedDate: IsNull(),
+         } 
       });
       if (!badge) {
          return null;

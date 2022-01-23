@@ -3,15 +3,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Col, Container, ProgressBar, Row } from 'react-bootstrap';
 import BadgeProgress from './BadgeProgress';
 import { Badge as BadgeEntity } from '../apiEntities/Badge.entity'
-
+import { TripPlan } from "../apiEntities/TripPlan.entity";
+import { Tourist } from "../apiEntities/Tourist.entity";
 interface IBadgeState {
 	badge: BadgeEntity;
   points: number;
 }
 
+interface ITripData {
+}
+
 export default function Badge() {
   const [data, setData] = useState<IBadgeState>({
     badge: {} as BadgeEntity,
+    points: 0,
+	});
+
+  const [tripData, setTripData] = useState<ITripData>({
     points: 0,
 	});
 

@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { ApplicationType } from "./ApplicationType.entity";
 import { ApplicationStatus } from "./Enums/ApplicationStatus.enum";
 import { Leader } from "./Leader.entity";
@@ -20,6 +20,10 @@ export class Application {
    // CHANGE Added status for application
    @Column({type: 'enum', enum: ApplicationStatus, default: ApplicationStatus.Created})
    status: ApplicationStatus
+
+   // CHANGE Added submission date
+   @CreateDateColumn()
+   submissionDate: Date
 
    // CHANGE Added requested mountain groups
    @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.applications)

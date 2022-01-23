@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
       context: './api'
     container_name: po_api
+    image: gotpttk-implementacja/api:${APITAG}
     volumes:
       - ./api/src:/app/src
       - ./api/test:/app/test
@@ -20,6 +21,7 @@ services:
       dockerfile: Dockerfile
       context: './frontend'
     container_name: po_frontend
+    image: gotpttk-implementacja/frontend:${FRONTENDTAG}
     volumes:
       - ./frontend/public:/app/public
       - ./frontend/src:/app/src

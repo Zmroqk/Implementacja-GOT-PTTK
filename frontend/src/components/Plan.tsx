@@ -1,9 +1,17 @@
-import { ChangeEvent, FormEvent, Fragment, useEffect, useRef, useState } from "react";
-import { Container, Row, Col, Button, Form } from 'react-bootstrap';
+import {
+	ChangeEvent,
+	Fragment,
+	useEffect,
+	useState,
+   FormEvent,
+   useRef
+} from "react";
+import { Container, Col, Row, Button, Form, Alert } from "react-bootstrap";
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
 import Waypoint from "../apiEntities/Waypoint.entity";
 import { Segment as SegmentEntity } from "../apiEntities/Segment.entity";
+import { useNavigate } from "react-router-dom";
 
 interface IPlanState {
 	mountainGroups: MountainGroup[];
@@ -13,47 +21,59 @@ interface IPlanState {
 }
 
 interface IPlanFormState {
- 	startPointId?: number;
-  endPointId?: number;
-  viaPointsCount: number;
+	startPointId?: number;
+	endPointId?: number;
+	viaPointsCount: number;
 }
 
 type SegmentInput = {
-  segmentId: number
+	segmentId: number;
+   isReverse: boolean;
+};
+
+type AlertState = {
+   isVisible: boolean;
 }
 
 export default function Plan() {
-  const [data, setData] = useState<IPlanState>({
+	const [data, setData] = useState<IPlanState>({
 		mountainGroups: [],
 		mountainRanges: [],
 		waypoints: [],
 		segments: [],
 	});
 
-  // Hardcoded segment id
-  const [formInputs, setFormInputs] = useState<SegmentInput[]>([{segmentId: 1} as SegmentInput]);
-  console.log(formInputs);
+	// Hardcoded segment id
+	const [formInputs, setFormInputs] = useState<SegmentInput[]>([
+		{ segmentId: 1, isReverse: false } as SegmentInput,
+	]);
+	console.log(formInputs);
 
-  const handleInputChange = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
-    e.preventDefault();
-    const { name, value } = e.target;
-    const list = [...formInputs];
-    list[index].segmentId = Number.parseInt(value);
-    setFormInputs(list);
-  };
+	const handleInputChange = (
+		e: ChangeEvent<HTMLSelectElement>,
+		index: number
+	) => {
+		e.preventDefault();
+		const { name, value } = e.target;
+		const list = [...formInputs];
+		list[index].segmentId = Number.parseInt(value);
+		setFormInputs(list);
+	};
 
-  // TODO Przy remove rozjezdza sie wartosc w select i wartosc w formInputs
-  const handleRemoveClick = (index: number) => {
-    const list = [...formInputs];
-    list.splice(index, 1);
-    setFormInputs(list);
-  };
+	const handleRemoveClick = (index: number) => {
+		const list = [...formInputs];
+		list.splice(index, 1);
+		setFormInputs(list);
+	};
 
-  const handleAddClick = () => {
-    setFormInputs([...formInputs, { segmentId: 1 } as SegmentInput]);
-  };
-  
-  useEffect(() => {
+	const handleAddClick = () => {
+		setFormInputs([...formInputs, { segmentId: 1, isReverse: false } as SegmentInput]);
+	};
+
+   const descriptionRef = useRef<HTMLTextAreaElement>(null);
+   const buttonRef = useRef<HTMLButtonElement>(null);
+
+	useEffect(() => {
 		fetch("http://localhost:3001/admin/segment/create")
 			.then((data) => data.json())
 			.then((jsonData) => {
@@ -61,57 +81,118 @@ export default function Plan() {
 			});
 	}, []);
 
-  const segmentsOptions = data.segments.map((s) => (
-    <option key={s.id} value={s.id}>
-      {s.name}
-    </option>
-  ))
+	const segmentsOptions = data.segments.map((s) => (
+		<option key={s.id} value={s.id}>
+			{s.name}
+		</option>
+	));
 
-  const segmentsForms = formInputs.map((s, i) => {
-    return (
-    <>
-      <Form.Group controlId={"segment-" + i}>
-        <Form.Label>Odcinek {i}</Form.Label>
-        <Form.Select onChange={e => handleInputChange(e, i)}>
-          {segmentsOptions}
-        </Form.Select>
-      </Form.Group>
-      <div>
-        {formInputs.length !== 1 && <Button type="button"
-          onClick={() => handleRemoveClick(i)}>Remove</Button>}
-        {formInputs.length - 1 === i && <Button type="button" onClick={handleAddClick}>Add</Button>}
-      </div>
-    </>
-    )
-  });
+	const segmentsForms = formInputs.map((s, i) => {
+		return (
+			<Fragment>
+            <Row className="mb-3">
+               <Col>
+                  <Form.Label>Odcinek {i == 0 ? "początkowy" : i + 1}</Form.Label>
+                  <Form.Select
+                     onChange={(e) => handleInputChange(e, i)}
+                     value={formInputs[i].segmentId}
+                  >
+                     {segmentsOptions}
+                  </Form.Select>
+               </Col>
 
-  return (
-    <>
-    <Container className="mt-4">
-        <Col>
-          <h2>Planowanie wycieczki</h2>
-          <Form>
-            <Form.Group controlId="startSegmentId">
-            <Form.Label>Odcinek początkowy</Form.Label>
-              <Form.Select>
-                {segmentsOptions}
-              </Form.Select>
-            </Form.Group>
+               <Col className="col-md-auto">
+                  {formInputs.length !== 1 && (
+                     <Button type="button" onClick={() => handleRemoveClick(i)}>
+                        Usuń
+                     </Button>
+                  )}
+               </Col>
+            </Row>
+            {formInputs.length - 1 === i && (
+               <Button type="button" onClick={handleAddClick}>
+                  Dodaj odcinek
+               </Button>
+            )}
 
-            {segmentsForms}
+            {/* TODO <Form.Group>
+               <Form.Check 
+                  type="switch"
+                  id="custom-switch"
+                  label="Kierunek przeciwny"
+               />
+            </Form.Group> */}
+            
+			</Fragment>
+		);
+	});
 
-            <Container>
-              <h4>Punkty GOT: ---</h4>
-            </Container>
+   const navigate = useNavigate();
 
-            <Button type="submit">
-              Utwórz plan wycieczki
-            </Button>
-          </Form>
-        </Col>
-        <Col>
-        </Col>
-    </Container>
-  </>
-  )
+   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+      if (descriptionRef.current) {
+         const body = {
+            user_id: 2,
+            segments: formInputs.map((s, i) => [{
+               id: s.segmentId,
+               orderNumber: i,
+               reverse: true,
+               isUserSegment: false
+            }]),
+            description: descriptionRef.current.value,
+         };
+
+         fetch("http://localhost:3001/tourist/tripplan/create", {
+				method: "POST",
+				body: JSON.stringify(body),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}).then((res) => {
+				if (res.status == 200 || res.status == 201) {
+					navigate("/tourist/badge");
+				}
+            else {
+               // TODO unlock button and do something
+            }
+			});
+      }
+      
+	};
+
+	return (
+		<Fragment>
+			<Container className="mt-4">
+            <Row>
+				<Col>
+					<h2>Planowanie wycieczki</h2>
+					<Form onSubmit={onSubmit}>
+						{segmentsForms}
+
+                  <Form.Group className="mb-3" controlId="description">
+                     <Form.Label>Opis planu wycieczki</Form.Label>
+                     <Form.Control
+                        ref={descriptionRef}
+                        as="textarea"
+                        rows={3}
+                     />
+                  </Form.Group>
+
+                  <Container>
+							<h5>Punkty GOT: ---</h5>
+						</Container>
+
+						<Button type="submit"  ref={buttonRef}>
+                     Utwórz plan wycieczki
+                  </Button>
+					</Form>
+				</Col>
+				<Col>
+               <h3>FOO</h3>
+            </Col>
+            </Row>
+			</Container>
+		</Fragment>
+	);
 }

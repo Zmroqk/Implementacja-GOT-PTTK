@@ -23,7 +23,10 @@ export class ApplicationService {
       const application = await this.applicationsRepository.findOne(
          applicationId,
       );
-      if (!application) throw new NotFoundException(`Cannot find application with id: ${applicationId}`);
+      if (!application || application.status == ApplicationStatus.Accepted)
+         throw new NotFoundException(
+            `Cannot find application with id: ${applicationId}`,
+         );
       application.status = ApplicationStatus.Accepted;
       let leader = null;
       if (application.type.type === 'Grant')
@@ -36,16 +39,19 @@ export class ApplicationService {
             application.applicant.id,
             application.requestedMountainGroups,
          );
-      this.applicationsRepository.save(application)
-      return leader
+      this.applicationsRepository.save(application);
+      return leader;
    }
 
    async declineApplication(applicationId: number): Promise<Application> {
       const application = await this.applicationsRepository.findOne(
          applicationId,
       );
-      if (!application) throw new NotFoundException(`Cannot find application with id: ${applicationId}`);
+      if (!application || application.status == ApplicationStatus.Declined)
+         throw new NotFoundException(
+            `Cannot find application with id: ${applicationId}`,
+         );
       application.status = ApplicationStatus.Declined;
-      return this.applicationsRepository.save(application)
+      return this.applicationsRepository.save(application);
    }
 }
