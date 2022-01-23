@@ -20,6 +20,10 @@ export default function Trip() {
     points: 0,
   });
 
+  function onlyUnique(value: string, index: number, arr: Array<string>) {
+    return arr.indexOf(value) === index;
+  }
+
   console.log(badgeData);
 
    useEffect(() => {
@@ -41,17 +45,30 @@ export default function Trip() {
       <Container className="bg-light py-2 px-2 rounded">
         <Row>
           <Col className="col-md-auto">
-            <img src="https://via.placeholder.com/150" alt="trip-map-img"></img>
+            <img src="https://via.placeholder.com/175" alt="trip-map-img"></img>
           </Col>
           <Col>
-            <h5 className="text-center">{t.tripSegments[0].segment?.startPoint.name} - {t.tripSegments[t.tripSegments.length - 1].segment?.endPoint.name}
-            </h5>
-            <h5>Punkty GOT: {t.points}</h5>
-            <Link to={`/tourist/trip/${t.id}`}>
-              <Button className="float-end">
-                Importuj trasę
-              </Button>
-            </Link>
+            <h5 className="text-center">Z: {t.tripSegments[0].segment?.startPoint.name}, Do: {t.tripSegments[t.tripSegments.length - 1].segment?.endPoint.name}</h5>
+            <h5 className="text-secondary mb-0">Przez:</h5>
+            <ul>
+            {
+              t.tripSegments.map(ts => ts.direction).filter((x, i, a) => a.indexOf(x) == i).map(viaPoint => (
+                <li><h5 className="text-secondary mb-0">{viaPoint}</h5></li>
+              ))
+            }
+            </ul>
+            <Row>
+              <Col>
+                <h5>Punkty GOT: {t.points}</h5>
+              </Col>
+              <Col>
+                <Link to={`/tourist/trip/${t.id}`}>
+                  <Button className="float-end">
+                    Importuj trasę
+                  </Button>
+                </Link>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>  
@@ -73,19 +90,18 @@ export default function Trip() {
                     <img src="https://via.placeholder.com/150" alt="trip-map-img"></img>
                   </Col>
                   <Col>
-                    <h5 className="text-center">Utwórz plan wycieczki
-                    </h5>
+                    <h5 className="text-center">Utwórz plan wycieczki</h5>
                   </Col>
                 </Row>
               </Container>
               </Link>
             </Col>
-            <Col className="col-md-auto">
+            <Col className="bg-light py-4 col-md-auto">
               <h4>Aktualnie zdobywana odznaka:</h4>
               { badgeData.badge.type ? (
                 <>
                   <h4 className="text-center">GOT {badgeData.badge.type.type} {badgeData.badge.level.level}</h4>
-                  <h4>Punkty GOT: {badgeData.points}</h4>
+                  <h4 className="text-center">Punkty GOT: {badgeData.points}</h4>
                 </>
               ) : null }
               

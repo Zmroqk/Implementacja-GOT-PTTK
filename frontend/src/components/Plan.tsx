@@ -85,7 +85,7 @@ export default function Plan() {
 
 	const segmentsOptions = data.segments.map((s) => (
 		<option key={s.id} value={s.id}>
-			{s.name}
+        {s.name} ({s.points}/{s.pointsReverse})
 		</option>
 	));
 
@@ -97,7 +97,6 @@ export default function Plan() {
                      <Form.Label>Odcinek {i == 0 ? "początkowy" : i + 1}</Form.Label>
                   </Col>
                   <Col className="col-md-auto">
-                     {/* TODO Rozjezdza sie ze stanem przy usuwaniu */}
                      <Form.Check
                         type="switch"
                         label="Kierunek przeciwny"
