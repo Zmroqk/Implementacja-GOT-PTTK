@@ -1,4 +1,4 @@
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, Fragment, useEffect, useRef, useState } from "react";
 import { Container, Row, Col, Button, Form } from 'react-bootstrap';
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
@@ -18,6 +18,10 @@ interface IPlanFormState {
   viaPointsCount: number;
 }
 
+type SegmentInput = {
+  segmentId: number
+}
+
 export default function Plan() {
   const [data, setData] = useState<IPlanState>({
 		mountainGroups: [],
@@ -26,9 +30,28 @@ export default function Plan() {
 		segments: [],
 	});
 
-  const waypointStartRef = useRef<HTMLSelectElement>(null);
-  const waypointEndRef = useRef<HTMLSelectElement>(null);
+  // Hardcoded segment id
+  const [formInputs, setFormInputs] = useState<SegmentInput[]>([{segmentId: 1} as SegmentInput]);
+  console.log(formInputs);
 
+  const handleInputChange = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+    const { name, value } = e.target;
+    const list = [...formInputs];
+    list[index].segmentId = Number.parseInt(value);
+    setFormInputs(list);
+  };
+
+  // TODO Przy remove nie ostatniego elementu cala strona ma realod
+  const handleRemoveClick = (index: number) => {
+    const list = [...formInputs];
+    list.splice(index, 1);
+    setFormInputs(list);
+  };
+
+  const handleAddClick = () => {
+    setFormInputs([...formInputs, { segmentId: 1 } as SegmentInput]);
+  };
+  
   useEffect(() => {
 		fetch("http://localhost:3001/admin/segment/create")
 			.then((data) => data.json())
@@ -37,29 +60,29 @@ export default function Plan() {
 			});
 	}, []);
 
-  const [formData, setFormData] = useState<IPlanFormState>({
-     viaPointsCount: 0,
-  });
-
   const segmentsOptions = data.segments.map((s) => (
     <option key={s.id} value={s.id}>
       {s.name}
     </option>
   ))
 
-  const segmentsForms = [];
-  for (var i = 0; i < formData.viaPointsCount; i += 1) {
-    segmentsForms.push(
-      <>
-        <Form.Group controlId={"segment-" + i}>
-					<Form.Label>Odcinek {i + 1}</Form.Label>
-            <Form.Select>
-              {segmentsOptions}
-            </Form.Select>
-				</Form.Group>
-      </>
-    );
-  };
+  const segmentsForms = formInputs.map((s, i) => {
+    return (
+    <>
+      <Form.Group controlId={"segment-" + i}>
+        <Form.Label>Odcinek {i}</Form.Label>
+        <Form.Select onChange={e => handleInputChange(e, i)}>
+          {segmentsOptions}
+        </Form.Select>
+      </Form.Group>
+      <div>
+        {formInputs.length !== 1 && <button
+          onClick={() => handleRemoveClick(i)}>Remove</button>}
+        {formInputs.length - 1 === i && <button onClick={handleAddClick}>Add</button>}
+      </div>
+    </>
+    )
+  });
 
   return (
     <>
@@ -73,30 +96,6 @@ export default function Plan() {
                 {segmentsOptions}
               </Form.Select>
             </Form.Group>
-
-            <div>
-              <Button
-              onClick={() => setFormData({
-                ...formData,
-                viaPointsCount: formData.viaPointsCount + 1,
-              })}>
-              Dodaj kolejny odcinek
-              </Button>
-            </div>
-
-            <div>
-              <Button
-              onClick={() => {
-                if (formData.viaPointsCount > 0) {
-                  setFormData({
-                    ...formData,
-                    viaPointsCount: formData.viaPointsCount - 1,
-                  })
-                }
-              }}>
-              Usuń ostatni
-              </Button>
-            </div>
 
             {segmentsForms}
 
