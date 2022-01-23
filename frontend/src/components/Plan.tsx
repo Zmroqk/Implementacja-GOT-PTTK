@@ -35,13 +35,14 @@ export default function Plan() {
   console.log(formInputs);
 
   const handleInputChange = (e: ChangeEvent<HTMLSelectElement>, index: number) => {
+    e.preventDefault();
     const { name, value } = e.target;
     const list = [...formInputs];
     list[index].segmentId = Number.parseInt(value);
     setFormInputs(list);
   };
 
-  // TODO Przy remove nie ostatniego elementu cala strona ma realod
+  // TODO Przy remove rozjezdza sie wartosc w select i wartosc w formInputs
   const handleRemoveClick = (index: number) => {
     const list = [...formInputs];
     list.splice(index, 1);
@@ -76,9 +77,9 @@ export default function Plan() {
         </Form.Select>
       </Form.Group>
       <div>
-        {formInputs.length !== 1 && <button
-          onClick={() => handleRemoveClick(i)}>Remove</button>}
-        {formInputs.length - 1 === i && <button onClick={handleAddClick}>Add</button>}
+        {formInputs.length !== 1 && <Button type="button"
+          onClick={() => handleRemoveClick(i)}>Remove</Button>}
+        {formInputs.length - 1 === i && <Button type="button" onClick={handleAddClick}>Add</Button>}
       </div>
     </>
     )
