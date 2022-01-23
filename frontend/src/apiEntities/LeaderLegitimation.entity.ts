@@ -1,5 +1,5 @@
 import MountainGroup from "./MountainGroup.entity";
-import Leader from "./Leader.entity";
+import { Leader } from "./Leader.entity";
 
 export default interface LeaderLegitimation {
 

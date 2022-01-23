@@ -7,7 +7,7 @@ export class PTTKBook {
    @PrimaryGeneratedColumn()
    id: number
 
-   @OneToOne(() => Tourist, tourist => tourist.book, { cascade: true })
+   @OneToOne(() => Tourist, tourist => tourist.book, { cascade: ['insert', 'update'] })
    @JoinColumn()
    tourist: Tourist
 

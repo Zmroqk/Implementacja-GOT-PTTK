@@ -3,7 +3,6 @@ import { ClosureService } from './closure.service';
 
 describe('ClosureService', () => {
   let service: ClosureService;
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ClosureService],

@@ -1,9 +1,9 @@
 import MountainGroup from "./MountainGroup.entity";
 import ApplicationType from "./ApplicationType.entity";
 import { Tourist } from "./Tourist.entity";
-import Leader from "./Leader.entity";
+import { Leader } from "./Leader.entity";
 
-enum ApplicationStatus {
+export enum ApplicationStatus {
     Created = "Created",
     Pending = "Pending",
     Accepted = "Accepted",

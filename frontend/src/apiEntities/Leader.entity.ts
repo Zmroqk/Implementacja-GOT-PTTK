@@ -3,7 +3,7 @@ import Application from "./Application.entity";
 import LeaderLegitimation from "./LeaderLegitimation.entity";
 import Documentation from "./Documentation.entity";
 
-export default interface Leader {
+export interface Leader {
 
    id: number
    tourist: Tourist

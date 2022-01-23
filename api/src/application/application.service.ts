@@ -39,7 +39,7 @@ export class ApplicationService {
             application.applicant.id,
             application.requestedMountainGroups,
          );
-      this.applicationsRepository.save(application);
+      await this.applicationsRepository.save(application);
       return leader;
    }
 

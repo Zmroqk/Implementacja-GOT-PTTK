@@ -1,4 +1,4 @@
-import Leader from "./Leader.entity";
+import { Leader } from "./Leader.entity";
 import { Trip } from "./Trip.entity";
 import PTTKBook from "./PTTKBook.entity";
 import DocumentationStatus from "./DocumentationStatus.entity";

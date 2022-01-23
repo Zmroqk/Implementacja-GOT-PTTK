@@ -5,12 +5,15 @@ import BadgeProgress from './BadgeProgress';
 import { Badge as BadgeEntity } from '../apiEntities/Badge.entity'
 import { TripPlan } from "../apiEntities/TripPlan.entity";
 import { Tourist } from "../apiEntities/Tourist.entity";
+import { TripSegment } from "../apiEntities/TripSegment.entity";
+
 interface IBadgeState {
 	badge: BadgeEntity;
   points: number;
 }
 
 interface ITripData {
+  tripSegments: TripSegment;
 }
 
 export default function Badge() {
@@ -19,9 +22,7 @@ export default function Badge() {
     points: 0,
 	});
 
-  const [tripData, setTripData] = useState<ITripData>({
-    points: 0,
-	});
+  const [tripData, setTripData] = useState<TripPlan[]>([]);
 
   useEffect(() => {
 		fetch("http://localhost:3001/tourist/badge/ongoing/2")
@@ -29,9 +30,34 @@ export default function Badge() {
 			.then((jsonData) => setData(jsonData));
 	}, []);
 
+  {/* TODO - to ma fetchowac plany wycieczek a fetchuje wszystkie plany */}
+  useEffect(() => {
+		fetch("http://localhost:3001/Tourist/trip/trips")
+			.then((tripData) => tripData.json())
+			.then((jsonData) => setTripData(jsonData));
+	}, []);
+
   const touristName = data.badge.tourist ? (
     <h3>{data.badge.tourist.user.name} {data.badge.tourist.user.surname}</h3>
   ) : null;
+
+  console.log(tripData);
+
+  const tripPlans = tripData.map((t) => (
+    <Row className="mb-2">
+        <Container className="bg-success py-2 px-2 rounded">
+          <Row>
+            <Col className="col-md-auto">
+              <img src="https://via.placeholder.com/150" alt="trip-map-img"></img>
+            </Col>
+            <Col>
+              <h5 className="text-center">{t.tripSegments[0].segment?.startPoint.name} - {t.tripSegments[t.tripSegments.length - 1].segment?.endPoint.name}
+              </h5>
+            </Col>
+          </Row>
+        </Container>
+    </Row>
+  ));
 
   return (
     <>
@@ -57,7 +83,9 @@ export default function Badge() {
       </Row>
       <Row className="mt-4">
         <Col className="py-2 bg-light">
-          <h2>Wycieczki</h2>
+          <h2>Wycieczki - okres odznaki 2022</h2>
+
+          {tripPlans}
         </Col>
         <Col className="col-lg-5">
           {

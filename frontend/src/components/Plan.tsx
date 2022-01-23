@@ -31,10 +31,6 @@ type SegmentInput = {
    isReverse: boolean;
 };
 
-type AlertState = {
-   isVisible: boolean;
-}
-
 export default function Plan() {
 	const [data, setData] = useState<IPlanState>({
 		mountainGroups: [],
@@ -70,6 +66,12 @@ export default function Plan() {
 		setFormInputs([...formInputs, { segmentId: 1, isReverse: false } as SegmentInput]);
 	};
 
+   const handleReverseToggled = (index: number) => {
+      const list = [...formInputs];
+      list[index].isReverse = !list[index].isReverse;
+      setFormInputs(list);
+   };
+
    const descriptionRef = useRef<HTMLTextAreaElement>(null);
    const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -90,39 +92,43 @@ export default function Plan() {
 	const segmentsForms = formInputs.map((s, i) => {
 		return (
 			<Fragment>
-            <Row className="mb-3">
-               <Col>
-                  <Form.Label>Odcinek {i == 0 ? "początkowy" : i + 1}</Form.Label>
-                  <Form.Select
-                     onChange={(e) => handleInputChange(e, i)}
-                     value={formInputs[i].segmentId}
-                  >
-                     {segmentsOptions}
-                  </Form.Select>
-               </Col>
+               <Row className="mt-3">
+                  <Col>
+                     <Form.Label>Odcinek {i == 0 ? "początkowy" : i + 1}</Form.Label>
+                  </Col>
+                  <Col className="col-md-auto">
+                     {/* TODO Rozjezdza sie calkowicie ze stanem przy usuwaniu */}
+                     <Form.Check
+                        type="switch"
+                        label="Kierunek przeciwny"
+                        value={Number(s.isReverse)}
+                        onChange={() => handleReverseToggled(i)}
+                     />
+                  </Col>
+               </Row>
+               <Row>
+                  <Col>
+                     <Form.Select
+                        onChange={(e) => handleInputChange(e, i)}
+                        value={formInputs[i].segmentId}
+                     >
+                        {segmentsOptions}
+                     </Form.Select>
+                  </Col>
 
-               <Col className="col-md-auto">
-                  {formInputs.length !== 1 && (
-                     <Button type="button" onClick={() => handleRemoveClick(i)}>
-                        Usuń
-                     </Button>
-                  )}
-               </Col>
-            </Row>
+                  <Col className="col-md-auto">
+                     {formInputs.length !== 1 && (
+                        <Button type="button" onClick={() => handleRemoveClick(i)}>
+                           Usuń
+                        </Button>
+                     )}
+                  </Col>
+               </Row>
             {formInputs.length - 1 === i && (
-               <Button type="button" onClick={handleAddClick}>
+               <Button className="mt-4" type="button" onClick={handleAddClick}>
                   Dodaj odcinek
                </Button>
             )}
-
-            {/* TODO <Form.Group>
-               <Form.Check 
-                  type="switch"
-                  id="custom-switch"
-                  label="Kierunek przeciwny"
-               />
-            </Form.Group> */}
-            
 			</Fragment>
 		);
 	});
@@ -137,7 +143,7 @@ export default function Plan() {
             segments: formInputs.map((s, i) => [{
                id: s.segmentId,
                orderNumber: i,
-               reverse: true,
+               reverse: s.isReverse,
                isUserSegment: false
             }]),
             description: descriptionRef.current.value,
@@ -188,9 +194,7 @@ export default function Plan() {
                   </Button>
 					</Form>
 				</Col>
-				<Col>
-               <h3>FOO</h3>
-            </Col>
+
             </Row>
 			</Container>
 		</Fragment>

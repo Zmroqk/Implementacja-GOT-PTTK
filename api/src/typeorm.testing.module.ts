@@ -1,6 +1,6 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { Connection, EntitySchema } from 'typeorm';
+import { Connection } from 'typeorm';
 import { Admin } from './Entities/Admin.entity';
 import { Application } from './Entities/Application.entity';
 import { ApplicationType } from './Entities/ApplicationType.entity';
@@ -12,6 +12,7 @@ import { Color } from './Entities/Color.entity';
 import { Documentation } from './Entities/Documentation.entity';
 import { DocumentationProve } from './Entities/DocumentationProve.entity';
 import { DocumentationStatus } from './Entities/DocumentationStatus.entity';
+import { ApplicationStatus } from './Entities/Enums/ApplicationStatus.enum';
 import { HikingTrail } from './Entities/HikingTrail.entity';
 import { Leader } from './Entities/Leader.entity';
 import { LeaderLegitimation } from './Entities/LeaderLegitimation.entity';
@@ -30,8 +31,12 @@ import { Waypoint } from './Entities/Waypoint.entity';
 export const TypeOrmTestingModule = () => [
    TypeOrmModule.forRoot({
       type: 'mysql',
-      database: ':memory:',
+      database: 'test',
+      host: '127.0.0.1',
+      username: process.env['DB_USER'],
+      password: process.env['DB_PASS'],
       dropSchema: true,
+      port: 3306,
       entities: [
          PTTKBook,
          User,
@@ -95,7 +100,6 @@ async function seedBadges(
    badgeLevelRepository,
    badgeRepository,
 ) {
-   console.log('Start seed badges');
    const badgeLevel = new BadgeLevel();
    badgeLevel.level = 'Brązowa';
    const badgeLevelSilver = new BadgeLevel();
@@ -140,13 +144,11 @@ async function seedBadges(
    badge5.receivedDate = null;
 
    const badges = [badge1, badge2, badge3, badge4, badge5];
-   console.log('Saving badges: ');
 
    return await badgeRepository.save(badges);
 }
 
 async function seedWaypoints(waypointRepository) {
-   console.log('Start seed waypoints');
    const waypoint1 = new Waypoint();
    waypoint1.height = 1300;
    waypoint1.name = 'Rusinowa Polanka';
@@ -210,7 +212,6 @@ async function seedWaypoints(waypointRepository) {
       waypoint12,
    ];
 
-   console.log('Saving Waypoints: ');
    return await waypointRepository.save(waypoints);
 }
 
@@ -257,7 +258,6 @@ async function seedMountainGroups(
    mountainRanges: MountainRange[],
    mountainGroupRepository,
 ) {
-   console.log('Start seed MountainGroups: ');
    const mountainGroup1 = new MountainGroup();
    mountainGroup1.name = 'Tatry i Podtatrze';
    mountainGroup1.mountainRanges = [];
@@ -268,7 +268,6 @@ async function seedMountainGroups(
    mountainGroup2.mountainRanges = [];
    mountainGroup2.mountainRanges.push(mountainRanges[2]);
    mountainGroup2.mountainRanges.push(mountainRanges[3]);
-   console.log('Start saving mountainGroups: ');
    return await mountainGroupRepository.save([mountainGroup1, mountainGroup2]);
 }
 
@@ -311,7 +310,6 @@ async function seedUsers(
    userLeader2.surname = 'Sadowski';
    userLeader2.passwordHash = randomUUID();
 
-   console.log('Saving users: ');
    const users = await userRepository.save([
       userAdmin,
       userLeader1,
@@ -319,14 +317,11 @@ async function seedUsers(
       userTourist1,
       userTourist2,
    ]);
-   console.log('Saved users: ');
 
    const admin = new Admin();
    admin.user = users[0];
 
-   console.log('Saving admin: ');
    await adminRepository.save(admin);
-   console.log('Saved admin: ');
 
    const tourist1 = new Tourist();
    tourist1.book = new PTTKBook();
@@ -357,14 +352,12 @@ async function seedUsers(
    leaderTourist2.user = users[2];
    leaderTourist2.isDisabled = false;
 
-   console.log('Saving tourists: ');
    const tourists = await touristRepository.save([
       tourist1,
       tourist2,
       leaderTourist1,
       leaderTourist2,
    ]);
-   console.log('Saved tourists: ');
 
    const legitimation1 = new LeaderLegitimation();
    legitimation1.mountainGroups = [mountainGroups[0]];
@@ -382,23 +375,56 @@ async function seedUsers(
 
    const leaders = [leader1, leader2];
 
-   console.log('Saving leaders: ');
    await leaderRepository.save(leaders);
-   console.log('Saved leaders');
 
-   return {users, admin, tourists, leaders}
+   return { users, admin, tourists, leaders };
 }
 
-async function seedApplicationTypes(applicationTypeRepository){
-   const applicationType = new ApplicationType()
-   applicationType.type = "Grant"
-   const applicationTypeExtend = new ApplicationType()
-   applicationTypeExtend.type = "Extend"
-   return applicationTypeRepository.save([applicationType, applicationTypeExtend])
+async function seedApplicationTypes(applicationTypeRepository) {
+   const applicationType = new ApplicationType();
+   applicationType.type = 'Grant';
+   const applicationTypeExtend = new ApplicationType();
+   applicationTypeExtend.type = 'Extend';
+   return applicationTypeRepository.save([
+      applicationType,
+      applicationTypeExtend,
+   ]);
+}
+
+async function seedApplications(
+   types: ApplicationType[],
+   tourists: Tourist[],
+   leaders: Leader[],
+   mountainGroups: MountainGroup[],
+   applicationsRepository,
+) {
+   const application1 = new Application();
+   application1.applicant = tourists[0];
+   application1.body = 'Test application';
+   application1.requestedMountainGroups = [mountainGroups[0]];
+   application1.status = ApplicationStatus.Created;
+   application1.type = types[0];
+   const application1Declined = new Application();
+   application1Declined.applicant = tourists[0];
+   application1Declined.body = 'Test application';
+   application1Declined.requestedMountainGroups = [mountainGroups[0]];
+   application1Declined.status = ApplicationStatus.Declined;
+   application1Declined.type = types[0];
+   const application2Extend = new Application();
+   application2Extend.applicant = leaders[0].tourist;
+   application2Extend.body = 'Test application Extend';
+   application2Extend.requestedMountainGroups = [mountainGroups[1]];
+   application2Extend.status = ApplicationStatus.Created;
+   application2Extend.type = types[1];
+   return applicationsRepository.save([
+      application1,
+      application1Declined,
+      application2Extend,
+   ]);
 }
 
 /**
- * 
+ *
  * @param connection Connection to use for seeding database
  * @returns
  * ```
@@ -432,6 +458,11 @@ async function seedApplicationTypes(applicationTypeRepository){
  * applicationTypes: [
  *    type1: Grant
  *    type2: Extend
+ * ],
+ * applications: [
+ *    application1:
+ *    application2: declined
+ *    application3: leader
  * ]
  * ```
  */
@@ -457,7 +488,16 @@ export async function seedDatabase(connection: Connection) {
       connection.getRepository(Tourist),
       connection.getRepository(Leader),
       connection.getRepository(Admin),
-   )
-   const types = await seedApplicationTypes(connection.getRepository(ApplicationType))
-   return {users, mountainGroups, mountainRanges, waypoints, badges, types};
+   );
+   const types = await seedApplicationTypes(
+      connection.getRepository(ApplicationType),
+   );
+   const applications = await seedApplications(
+      types,
+      users.tourists,
+      users.leaders,
+      mountainGroups,
+      connection.getRepository(Application),
+   );
+   return { users, mountainGroups, mountainRanges, waypoints, badges, types, applications };
 }

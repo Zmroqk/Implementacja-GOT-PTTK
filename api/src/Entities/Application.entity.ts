@@ -26,7 +26,7 @@ export class Application {
    submissionDate: Date
 
    // CHANGE Added requested mountain groups
-   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.applications)
+   @ManyToMany(() => MountainGroup, mountainGroup => mountainGroup.applications, { eager: true })
    @JoinTable()
    requestedMountainGroups: MountainGroup[]
 

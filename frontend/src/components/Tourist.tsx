@@ -13,6 +13,7 @@ import {
     Link,
     useNavigate
   } from "react-router-dom";
+import TripForm from './TripForm';
 
 
 export default function Tourist() {
@@ -77,6 +78,7 @@ export default function Tourist() {
                 <Route path="/plan" element={<Plan />} />
                 <Route path="/trip" element={<Trip />} />
                 <Route path="/badge" element={<Badge />} />
+                <Route path="/trip/:id" element={<TripForm />} />
             </Routes>
         </div>
         </div>
