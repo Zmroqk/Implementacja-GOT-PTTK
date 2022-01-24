@@ -15,7 +15,7 @@ export class TouristService {
    async getBadges(userId: number): Promise<Badge[]> {
       const badges = await this.badgeRepository.find({
          tourist: {
-            id: userId
+            id: userId,
          },
          receivedDate: Not(IsNull()),
       });
@@ -24,18 +24,23 @@ export class TouristService {
 
    async getOngoingBadge(userId: number): Promise<GetOngoingBadgeResponse> {
       const badge = await this.badgeRepository.findOne({
-         tourist: {
-            id: userId
+         relations: ['trips'],
+         where: {
+            tourist: {
+               id: userId,
+            },
+            receivedDate: IsNull(),
          },
-         receivedDate: IsNull(),
       });
       if (!badge) {
          return null;
-      }
+      }   
       const points = await this.tripsService.getProgress(userId, badge.id);
       const response = new GetOngoingBadgeResponse();
       response.badge = badge;
-      response.points = points;
+      response.points = points.points;
+      response.inPolandRatio = points.inPolandRatio;
+      response.mountainRangesCount = points.mountainRangesCount;
       return response;
    }
 }

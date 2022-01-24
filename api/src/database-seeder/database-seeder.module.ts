@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Admin } from 'src/Entities/Admin.entity';
+import { Application } from 'src/Entities/Application.entity';
+import { ApplicationType } from 'src/Entities/ApplicationType.entity';
 import { Badge } from 'src/Entities/Badge.entity';
 import { BadgeLevel } from 'src/Entities/BadgeLevel.entity';
 import { BadgeType } from 'src/Entities/BadgeType.entity';
@@ -28,6 +30,8 @@ import { DatabaseSeederService } from './database-seeder.service';
          BadgeType,
          BadgeLevel,
          LeaderLegitimation,
+         Application,
+         ApplicationType
       ]),
    ],
    controllers: [DatabaseSeederController],

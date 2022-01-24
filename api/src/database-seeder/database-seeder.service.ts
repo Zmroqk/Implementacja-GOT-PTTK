@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
 import { Admin } from 'src/Entities/Admin.entity';
+import { Application } from 'src/Entities/Application.entity';
+import { ApplicationType } from 'src/Entities/ApplicationType.entity';
 import { Badge } from 'src/Entities/Badge.entity';
 import { BadgeLevel } from 'src/Entities/BadgeLevel.entity';
 import { BadgeType } from 'src/Entities/BadgeType.entity';
+import { ApplicationStatus } from 'src/Entities/Enums/ApplicationStatus.enum';
 import { Leader } from 'src/Entities/Leader.entity';
 import { LeaderLegitimation } from 'src/Entities/LeaderLegitimation.entity';
 import { MountainGroup } from 'src/Entities/MountainGroup.entity';
@@ -29,22 +32,34 @@ export class DatabaseSeederService {
       private mountainRangeRepository: Repository<MountainRange>,
       @InjectRepository(MountainGroup)
       private mountainGroupRepository: Repository<MountainGroup>,
-      @InjectRepository(BadgeLevel) private badgeLevelRepository: Repository<BadgeLevel>,
-      @InjectRepository(BadgeType) private badgeTypeRepository: Repository<BadgeType>,
+      @InjectRepository(BadgeLevel)
+      private badgeLevelRepository: Repository<BadgeLevel>,
+      @InjectRepository(BadgeType)
+      private badgeTypeRepository: Repository<BadgeType>,
+      @InjectRepository(Application)
+      private applicationsRepository: Repository<Application>,
+      @InjectRepository(ApplicationType)
+      private applicationTypeRepository: Repository<ApplicationType>,
    ) {}
 
    async seedDatabase() {
-      if(await this.userRepository.count() > 0)
-         return
+      if ((await this.userRepository.count()) > 0) return;
+      const applicationsTypes = await this.seedApplicationTypes();
       const badges = await this.seedBadges();
       const waypoints = await this.seedWaypoints();
       const mountainRanges = await this.seedMountainRanges(waypoints);
       const mountainGroups = await this.seedMountainGroups(mountainRanges);
-      await this.seedUsers(badges, mountainGroups);
+      const users = await this.seedUsers(badges, mountainGroups);
+      const applications = await this.seedApplications(
+         applicationsTypes,
+         users.tourists,
+         users.leaders,
+         mountainGroups,
+      );
    }
 
    private async seedBadges() {
-      console.log("Start seed badges")
+      console.log('Start seed badges');
       const badgeLevel = new BadgeLevel();
       badgeLevel.level = 'Brązowa';
       const badgeLevelSilver = new BadgeLevel();
@@ -54,8 +69,14 @@ export class DatabaseSeederService {
       const badgeTypeMedium = new BadgeType();
       badgeTypeMedium.type = 'Średnia';
 
-      const badgeTypes = await this.badgeTypeRepository.save([badgeType, badgeTypeMedium])
-      const badgeLevels = await this.badgeLevelRepository.save([badgeLevel, badgeLevelSilver])
+      const badgeTypes = await this.badgeTypeRepository.save([
+         badgeType,
+         badgeTypeMedium,
+      ]);
+      const badgeLevels = await this.badgeLevelRepository.save([
+         badgeLevel,
+         badgeLevelSilver,
+      ]);
 
       const badge1 = new Badge();
       badge1.level = badgeLevels[0];
@@ -83,13 +104,13 @@ export class DatabaseSeederService {
       badge5.receivedDate = null;
 
       const badges = [badge1, badge2, badge3, badge4, badge5];
-      console.log("Saving badges: ")
+      console.log('Saving badges: ');
 
       return await this.badgeRepository.save(badges);
    }
 
    private async seedWaypoints() {
-      console.log("Start seed waypoints")
+      console.log('Start seed waypoints');
       const waypoint1 = new Waypoint();
       waypoint1.height = 1300;
       waypoint1.name = 'Rusinowa Polanka';
@@ -153,7 +174,7 @@ export class DatabaseSeederService {
          waypoint12,
       ];
 
-      console.log("Saving Waypoints: ")
+      console.log('Saving Waypoints: ');
       return await this.waypointRepository.save(waypoints);
    }
 
@@ -194,7 +215,7 @@ export class DatabaseSeederService {
    }
 
    private async seedMountainGroups(mountainRanges: MountainRange[]) {
-      console.log("Start seed MountainGroups: ")
+      console.log('Start seed MountainGroups: ');
       const mountainGroup1 = new MountainGroup();
       mountainGroup1.name = 'Tatry i Podtatrze';
       mountainGroup1.mountainRanges = [];
@@ -205,10 +226,52 @@ export class DatabaseSeederService {
       mountainGroup2.mountainRanges = [];
       mountainGroup2.mountainRanges.push(mountainRanges[2]);
       mountainGroup2.mountainRanges.push(mountainRanges[3]);
-      console.log("Start saving mountainGroups: ")
+      console.log('Start saving mountainGroups: ');
       return await this.mountainGroupRepository.save([
          mountainGroup1,
          mountainGroup2,
+      ]);
+   }
+
+   private async seedApplicationTypes() {
+      const applicationType = new ApplicationType();
+      applicationType.type = 'Grant';
+      const applicationTypeExtend = new ApplicationType();
+      applicationTypeExtend.type = 'Extend';
+      return this.applicationTypeRepository.save([
+         applicationType,
+         applicationTypeExtend,
+      ]);
+   }
+
+   private async seedApplications(
+      types: ApplicationType[],
+      tourists: Tourist[],
+      leaders: Leader[],
+      mountainGroups: MountainGroup[],
+   ) {
+      const application1 = new Application();
+      application1.applicant = tourists[0];
+      application1.body = 'Test application';
+      application1.requestedMountainGroups = [mountainGroups[0]];
+      application1.status = ApplicationStatus.Created;
+      application1.type = types[0];
+      const application1Declined = new Application();
+      application1Declined.applicant = tourists[0];
+      application1Declined.body = 'Test application';
+      application1Declined.requestedMountainGroups = [mountainGroups[0]];
+      application1Declined.status = ApplicationStatus.Declined;
+      application1Declined.type = types[0];
+      const application2Extend = new Application();
+      application2Extend.applicant = leaders[0].tourist;
+      application2Extend.body = 'Test application Extend';
+      application2Extend.requestedMountainGroups = [mountainGroups[1]];
+      application2Extend.status = ApplicationStatus.Created;
+      application2Extend.type = types[1];
+      return this.applicationsRepository.save([
+         application1,
+         application1Declined,
+         application2Extend,
       ]);
    }
 
@@ -244,7 +307,7 @@ export class DatabaseSeederService {
       userLeader2.surname = 'Sadowski';
       userLeader2.passwordHash = randomUUID();
 
-      console.log("Saving users: ")
+      console.log('Saving users: ');
       const users = await this.userRepository.save([
          userAdmin,
          userLeader1,
@@ -252,14 +315,14 @@ export class DatabaseSeederService {
          userTourist1,
          userTourist2,
       ]);
-      console.log("Saved users: ")
+      console.log('Saved users: ');
 
       const admin = new Admin();
       admin.user = users[0];
 
-      console.log("Saving admin: ")
-      await this.adminRepository.save(admin);   
-      console.log("Saved admin: ")
+      console.log('Saving admin: ');
+      await this.adminRepository.save(admin);
+      console.log('Saved admin: ');
 
       const tourist1 = new Tourist();
       tourist1.book = new PTTKBook();
@@ -290,28 +353,35 @@ export class DatabaseSeederService {
       leaderTourist2.user = users[2];
       leaderTourist2.isDisabled = false;
 
-      console.log("Saving tourists: ")
-      const tourists = await this.touristRepository.save([tourist1, tourist2, leaderTourist1, leaderTourist2]);
-      console.log("Saved tourists: ")
+      console.log('Saving tourists: ');
+      const tourists = await this.touristRepository.save([
+         tourist1,
+         tourist2,
+         leaderTourist1,
+         leaderTourist2,
+      ]);
+      console.log('Saved tourists: ');
 
       const legitimation1 = new LeaderLegitimation();
-      legitimation1.mountainGroups = [mountainGroups[0]]
+      legitimation1.mountainGroups = [mountainGroups[0]];
       const legitimation2 = new LeaderLegitimation();
-      legitimation2.mountainGroups = [mountainGroups[0], mountainGroups[1]]
+      legitimation2.mountainGroups = [mountainGroups[0], mountainGroups[1]];
 
       const leader1 = new Leader();
-      leader1.legitimation = legitimation1
+      leader1.legitimation = legitimation1;
       leader1.nominateDate = new Date(Date.now());
       leader1.tourist = tourists[2];
       const leader2 = new Leader();
-      leader2.legitimation = legitimation2
+      leader2.legitimation = legitimation2;
       leader2.nominateDate = new Date(Date.now());
       leader2.tourist = tourists[3];
 
       const leaders = [leader1, leader2];
 
-      console.log("Saving leaders: ")
+      console.log('Saving leaders: ');
       await this.leaderRepository.save(leaders);
-      console.log("Saved leaders")
+      console.log('Saved leaders');
+
+      return { users, admin, leaders, tourists };
    }
 }

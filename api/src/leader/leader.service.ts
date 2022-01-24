@@ -13,6 +13,10 @@ export class LeaderService {
       @InjectRepository(Tourist) private touristRepository: Repository<Tourist>,
    ) {}
 
+   async getAllLeaders(): Promise<Leader[]> {
+      return await this.leaderRepository.find()
+   }
+
    async makeLeader(
       userId: number,
       permissions: MountainGroup[],
@@ -23,7 +27,6 @@ export class LeaderService {
       leader.tourist = tourist;
       leader.legitimation = new LeaderLegitimation();
       leader.legitimation.mountainGroups = permissions;
-      leader.legitimation.leader = leader;
       leader.nominateDate = new Date(Date.now());
       const createdLeader = this.leaderRepository.save(leader);
       return createdLeader;
@@ -38,4 +41,6 @@ export class LeaderService {
       leader.legitimation.mountainGroups.push(...permissions);
       return await this.leaderRepository.save(leader);
    }
+
+
 }

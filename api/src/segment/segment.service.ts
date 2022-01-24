@@ -57,6 +57,15 @@ export class SegmentService {
       segment.endPoint = waypointEnd
       segment.points = points
       segment.pointsReverse = pointsReverse
-      return this.waypointRepository.save(segment)   
+      return this.segmentRepository.save(segment)   
+   }
+
+   async updateSegment(segmentId: number, points: number, pointsReverse: number): Promise<Segment> {
+      const segment = await this.segmentRepository.findOne(segmentId)
+      if(!segment)
+         throw new NotFoundException(`Segment with id: ${segmentId} not found`)
+      segment.points = points
+      segment.pointsReverse = pointsReverse
+      return await this.segmentRepository.save(segment)       
    }
 }

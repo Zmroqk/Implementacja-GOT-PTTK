@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsBoolean, IsDate, IsNumber } from "class-validator"
+import { IsBoolean, IsDateString, IsNumber } from "class-validator"
 
 export class CreateTripFromTripPlanRequest {
    
@@ -12,14 +12,13 @@ export class CreateTripFromTripPlanRequest {
    tripPlanId: number
    
    @ApiProperty()
-   @IsDate()
-   dateStart: Date
+   @IsDateString()
+   dateStart: Date | string
    
    @ApiProperty()
-   @IsDate()
-   dateEnd: Date
+   @IsDateString()
+   dateEnd: Date | string
    
    @ApiProperty()
-   @IsBoolean()
    isLeaderPresent: boolean
 }

@@ -14,6 +14,9 @@ import { ClosureService } from 'src/closure/closure.service';
 import { ClosureController } from 'src/closure/closure.controller';
 import { RouterModule } from '@nestjs/core';
 import { Closure } from 'src/Entities/Closure.entity';
+import { LegitimationController } from 'src/legitimation/legitimation.controller';
+import { LegitimationService } from 'src/legitimation/legitimation.service';
+import { Leader } from 'src/Entities/Leader.entity';
 
 @Module({
    imports: [
@@ -24,10 +27,11 @@ import { Closure } from 'src/Entities/Closure.entity';
          MountainGroup,
          MountainRange,
          Waypoint,
-         Closure
+         Closure,
+         Leader,
       ]),
    ],
-   controllers: [ApplicationController, SegmentController, ClosureController],
-   providers: [ApplicationService, SegmentService, ClosureService],
+   controllers: [ApplicationController, SegmentController, ClosureController, LegitimationController],
+   providers: [ApplicationService, SegmentService, ClosureService, LegitimationService],
 })
 export class AdminModule {}

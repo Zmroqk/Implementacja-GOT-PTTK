@@ -32,6 +32,8 @@ import { AdminModule } from './admin/admin.module';
 import { LeaderModule } from './leader/leader.module';
 import { RouterModule } from '@nestjs/core';
 import { DatabaseSeederModule } from './database-seeder/database-seeder.module';
+import { MountainGroupsService } from './mountain-groups/mountain-groups.service';
+import { LegitimationService } from './legitimation/legitimation.service';
 
 @Module({
    imports: [

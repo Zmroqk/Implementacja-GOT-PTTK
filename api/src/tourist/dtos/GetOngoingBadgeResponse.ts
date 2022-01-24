@@ -6,4 +6,8 @@ export class GetOngoingBadgeResponse {
    badge: Badge
    @ApiProperty()
    points: number
+   @ApiProperty()
+   mountainRangesCount: number
+   @ApiProperty()
+   inPolandRatio: number
 }

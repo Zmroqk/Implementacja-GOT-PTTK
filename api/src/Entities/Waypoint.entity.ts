@@ -10,7 +10,7 @@ export class Waypoint {
    @Column({ length: 255})
    name: string
 
-   @Column({ type: 'float' })
+   @Column({ type: 'float', nullable: true })
    height: number | null
 
    @ManyToOne(() => MountainRange, range => range.waypoints, { eager: true, cascade: ['insert', 'update'] })

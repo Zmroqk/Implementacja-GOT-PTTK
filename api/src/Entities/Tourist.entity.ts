@@ -38,6 +38,6 @@ export class Tourist {
    @OneToMany(() => Trip, trip => trip.tourist)
    trips: Trip[]
 
-   @OneToOne(() => PTTKBook, book => book.tourist, { eager: true })
+   @OneToOne(() => PTTKBook, book => book.tourist, { eager: true, cascade: true })
    book: PTTKBook
 }

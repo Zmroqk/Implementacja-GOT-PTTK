@@ -9,6 +9,7 @@ export class Segment {
    @PrimaryGeneratedColumn()
    id: number
 
+   // CHANGE Added segment name
    @Column({ length: 255 })
    name: string
 
