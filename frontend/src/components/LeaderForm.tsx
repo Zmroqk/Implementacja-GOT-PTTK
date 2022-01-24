@@ -124,22 +124,19 @@ export function LeaderForm() {
 								{"Data mianowania: "} {chosenLeader.nominateDate} {"\n"}
 							</p>
 							<p>
-								{"Uprawnienia: \n"}
+								{"Aktualne Uprawnienia: \n"}
 								{chosenLeader.legitimation.mountainGroups.map(
 									(mg) => mg.name + " "
 								)}
 							</p>
 						</Card.Text>
-						<Link to={`/admin/leader/${chosenLeader.id}`}>
-							<Button variant="primary">Edytuj</Button>
-						</Link>
 					</Card.Body>
 				</Card>
 			) : null}
 			<Form onSubmit={onSubmit}>
 				<Form.Group controlId="mountainGroupId">
 					<Form.Label>
-						Grupy górskie, do których przodownik ma uprawnienia
+						Wybór uprawnień przodownika
 					</Form.Label>
 					<Form.Control
 						as="select"

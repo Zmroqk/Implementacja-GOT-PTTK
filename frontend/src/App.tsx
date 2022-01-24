@@ -10,6 +10,7 @@ import {
   Routes,
   Route
 } from "react-router-dom";
+import { Redirect } from './components/Redirect';
 
 
 
@@ -21,6 +22,7 @@ function App() {
         <Routes>
           <Route path="/tourist/*" element={<Tourist />} />
           <Route path="/admin/*" element={<Admin />} />
+          <Route path="/*" element={<Redirect to='/tourist'/>} />
         </Routes>
       </Router>
     </div>

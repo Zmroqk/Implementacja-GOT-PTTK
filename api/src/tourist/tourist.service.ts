@@ -34,7 +34,7 @@ export class TouristService {
       });
       if (!badge) {
          return null;
-      }
+      }   
       const points = await this.tripsService.getProgress(userId, badge.id);
       const response = new GetOngoingBadgeResponse();
       response.badge = badge;

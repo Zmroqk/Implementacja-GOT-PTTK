@@ -57,6 +57,7 @@ export default function Trip() {
               ))
             }
             </ul>
+            <h5 className="mt-2 font-italic text-secondary">Opis: {t.description}</h5>
             <Row>
               <Col>
                 <h5>Punkty GOT: {t.points}</h5>

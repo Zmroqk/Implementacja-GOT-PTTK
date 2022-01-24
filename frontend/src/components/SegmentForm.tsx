@@ -3,8 +3,15 @@ import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
 import Waypoint from "../apiEntities/Waypoint.entity";
 import { Segment as SegmentEntity } from "../apiEntities/Segment.entity";
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+	FormEvent,
+	Fragment,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 interface ISegmentState {
 	mountainGroups: MountainGroup[];
@@ -19,28 +26,125 @@ interface ISegmentFormState {
 	wsId?: number;
 	weId?: number;
 	viaEnabled: boolean;
+   points?: number;
+   pointsReverse?: number;
+   via?: string
 }
 
-interface ISegmentFormProps {
-	segmentId?: number;
-}
+export function SegmentForm() {
+	const params = useParams();
 
-export function SegmentForm({ segmentId }: ISegmentFormProps) {
 	const [data, setData] = useState<ISegmentState>({
 		mountainGroups: [],
 		mountainRanges: [],
 		waypoints: [],
 		segments: [],
 	});
+	const [segmentToChange, setSegmentToChange] = useState<
+		SegmentEntity | undefined
+	>(undefined);
 
-	const mountainGroupRef = useRef<HTMLSelectElement>(null);
-	const mountainRangeRef = useRef<HTMLSelectElement>(null);
-	const waypointStartRef = useRef<HTMLSelectElement>(null);
-	const waypointEndRef = useRef<HTMLSelectElement>(null);
-	const viaRef = useRef<HTMLInputElement>(null);
-	const pointsFromRef = useRef<HTMLInputElement>(null);
-	const pointsToRef = useRef<HTMLInputElement>(null);
-	const buttonRef = useRef<HTMLButtonElement>(null);
+   const [formData, setFormData] = useState<ISegmentFormState>({
+		viaEnabled: false,
+	} as ISegmentFormState);
+
+	const mountainGroupRef = useCallback(
+		(node: HTMLSelectElement) => {
+			if (segmentToChange) {
+				const mountainGroup = data.mountainGroups.find((mg) =>
+					mg.mountainRanges.find(
+						(mr) => mr.id === segmentToChange.startPoint.mountainRange.id
+					)
+				);
+				if (node && mountainGroup) {
+					node.value = mountainGroup.id.toString();
+					node.disabled = true;
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const mountainRangeRef = useCallback(
+		(node: HTMLSelectElement) => {
+			if (segmentToChange) {
+				const mountainRange = data.mountainRanges.find(
+					(mr) => mr.id === segmentToChange.startPoint.mountainRange.id
+				);
+				if (node && mountainRange) {
+					node.value = mountainRange.id.toString();
+					node.disabled = true;
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const waypointStartRef = useCallback(
+		(node: HTMLSelectElement) => {
+			if (segmentToChange) {
+				const startWaypoint = data.waypoints.find(
+					(w) => w.id === segmentToChange.startPoint.id
+				);
+				if (node && startWaypoint) {
+					node.value = startWaypoint.id.toString();
+					node.disabled = true;
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const waypointEndRef = useCallback(
+		(node: HTMLSelectElement) => {
+			if (segmentToChange) {
+				const endWaypoint = data.waypoints.find(
+					(w) => w.id === segmentToChange.endPoint.id
+				);
+				if (node && endWaypoint) {
+					node.value = endWaypoint.id.toString();
+					node.disabled = true;
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const viaRef = useCallback(
+		(node: HTMLInputElement) => {
+			if (segmentToChange) {
+				if (node && segmentToChange.via !== "") {
+					node.value = segmentToChange.via;
+					node.disabled = true;
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const pointsFromRef = useCallback(
+		(node: HTMLInputElement) => {
+			if (segmentToChange) {
+				if (node) {
+					node.value = segmentToChange.points.toString();
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const pointsToRef = useCallback(
+		(node: HTMLInputElement) => {
+			if (segmentToChange) {
+				if (node) {
+					node.value = segmentToChange.pointsReverse.toString();
+				}
+			}
+		},
+		[segmentToChange]
+	);
+	const buttonRef = useRef<HTMLButtonElement>(null)
+   const viaButtonRef = useCallback((node: HTMLButtonElement) => {
+      if(segmentToChange){
+         if(node){
+            node.style.display = 'None'
+         }
+      }
+   },[segmentToChange]);
 
 	useEffect(() => {
 		fetch("http://localhost:3001/admin/segment/create")
@@ -49,15 +153,43 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 				setData(jsonData);
 				setFormData({
 					...formData,
-					mgId: jsonData.mountainGroups[0].id,
-					mrId: jsonData.mountainRanges[0].id,
 				} as ISegmentFormState);
 			});
 	}, []);
 
-	const [formData, setFormData] = useState<ISegmentFormState>({
-		viaEnabled: false,
-	} as ISegmentFormState);
+	useEffect(() => {
+      if(data.mountainGroups.length > 0){
+         setFormData({
+            ...formData,
+            mgId: data.mountainGroups[0].id,
+            mrId: data.mountainRanges[0].id
+         })
+      }
+		if (!params.id) {
+			return;
+		}
+		const segmentToModify = data.segments.find(
+			(s) => s.id === Number.parseInt(params.id!)
+		);
+      console.log(segmentToModify)
+		setSegmentToChange(segmentToModify);
+		if (segmentToModify) {
+         const mountainGroup = data.mountainGroups.find((mg) =>
+            mg.mountainRanges.find(
+               (mr) => mr.id === segmentToModify.startPoint.mountainRange.id
+            ))
+         setFormData({
+            ...formData,
+            mgId: mountainGroup!.id,
+            mrId: segmentToModify.startPoint.mountainRange.id,
+            wsId: segmentToModify.startPoint.id,
+            weId: segmentToModify.endPoint.id,
+            points: segmentToModify.points,
+            pointsReverse: segmentToModify.pointsReverse
+         })   
+		}
+	}, [data]);
+
 	const mountainGroupsOptions = data.mountainGroups.map((mg) => (
 		<option key={mg.id} value={mg.id}>
 			{mg.name}
@@ -68,7 +200,6 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 		const mountainGroup = data.mountainGroups.find(
 			(mg) => mg.id == formData.mgId
 		);
-		console.log(mountainGroup);
 		if (mountainGroup)
 			mountainRangesOptions = mountainGroup.mountainRanges.map((mr) => (
 				<option key={mr.id} value={mr.id}>
@@ -116,11 +247,18 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 							ref={viaRef}
 							type="text"
 							placeholder="Wprowadź punkt pośredni"
+                     onChange={(e) => {
+                        setFormData({
+                           ...formData,
+                           via: e.currentTarget.value
+                        })
+                     }}
 						/>
 					</Form.Group>
 				) : null}
 				<div>
 					<Button
+                  ref={viaButtonRef}
 						onClick={() =>
 							setFormData({
 								...formData,
@@ -159,6 +297,12 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 						type="number"
 						placeholder="Podaj liczbę punktow"
 						defaultValue="0"
+                  onChange={(e) => {
+                     setFormData({
+                        ...formData,
+                        points: Number.parseInt(e.currentTarget.value)
+                     })
+                  }}
 					/>
 				</Form.Group>
 				<Form.Group controlId="pointsToId">
@@ -168,10 +312,16 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 						type="number"
 						placeholder="Podaj liczbę punktow"
 						defaultValue="0"
+                  onChange={(e) => {
+                     setFormData({
+                        ...formData,
+                        pointsReverse: Number.parseInt(e.currentTarget.value)
+                     })
+                  }}
 					/>
 				</Form.Group>
 			</Fragment>
-		)
+		);
 	}
 
 	const navigate = useNavigate();
@@ -182,33 +332,55 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 			buttonRef.current.disabled = true;
 		}
 		if (
-			waypointStartRef.current &&
-			waypointEndRef.current && 
-			pointsFromRef.current &&
-			pointsToRef.current
-		) {
-			const body = {
-				waypointFromId: Number.parseInt(waypointStartRef.current.value),
-				waypointEndId: Number.parseInt(waypointEndRef.current.value),
-				via: viaRef.current ? viaRef.current.value : "",
-				points: Number.parseInt(pointsFromRef.current.value),
-				pointsReverse: Number.parseInt(pointsToRef.current.value),
-				inPoland: false,
-			};
-			fetch("http://localhost:3001/admin/segment/create", {
-				method: "POST",
-				body: JSON.stringify(body),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			}).then((res) => {
-				if (res.status == 200 || res.status == 201) {
-					navigate("/admin/segment")
-				}
-            else {
-               // TODO unlock button and do something
+			formData.wsId &&
+			formData.weId &&
+			formData.points &&
+			formData.pointsReverse
+		) {	
+         
+         if(segmentToChange){
+            const segmentId = params.id
+            const body = {
+               points: formData.points,
+               pointsReverse: formData.pointsReverse
             }
-			});
+            fetch(`http://localhost:3001/admin/segment/${segmentId}`, {
+               method: "PATCH",
+               body: JSON.stringify(body),
+               headers: {
+                  "Content-Type": "application/json",
+               },
+            }).then((res) => {
+               if (res.status == 200 || res.status == 201) {
+                  navigate("/admin/segment");
+               } else {
+                  // TODO unlock button and do something
+               }
+            });
+         }
+         else{
+            const body = {
+               waypointFromId: formData.wsId,
+               waypointEndId: formData.weId,
+               via: formData.via ? formData.via : "",
+               points: formData.points,
+               pointsReverse: formData.pointsReverse,
+               inPoland: false,
+            };
+            fetch("http://localhost:3001/admin/segment/create", {
+               method: "POST",
+               body: JSON.stringify(body),
+               headers: {
+                  "Content-Type": "application/json",
+               },
+            }).then((res) => {
+               if (res.status == 200 || res.status == 201) {
+                  navigate("/admin/segment");
+               } else {
+                  // TODO unlock button and do something
+               }
+            });
+         }			
 		}
 	};
 
@@ -249,7 +421,7 @@ export function SegmentForm({ segmentId }: ISegmentFormProps) {
 				{waypointsSelects}
 				{pointsSelect}
 				<Button type="submit" ref={buttonRef}>
-					Stwórz nowy odcinek
+					Zapisz
 				</Button>
 			</Form>
 		</Container>

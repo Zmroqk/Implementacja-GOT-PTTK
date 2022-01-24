@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { DocumentationProve } from "./DocumentationProve.entity";
 import { DocumentationStatus } from "./DocumentationStatus.entity";
 import { Leader } from "./Leader.entity";
@@ -17,6 +17,7 @@ export class Documentation {
    checker: Leader | null
 
    @OneToOne(() => Trip, trip => trip.documentation, { eager: true, cascade: ['insert', 'update']})
+   @JoinColumn()
    trip: Trip
 
    @ManyToOne(() => PTTKBook, book => book.documentations, { eager: true, cascade: ['insert', 'update']})

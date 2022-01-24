@@ -35,20 +35,21 @@ export default function Segment() {
 		<ListGroup key={mg.id}>
 			<ListGroup.Item>{mg.name}</ListGroup.Item>
 			{mg.mountainRanges.map((mr) => (
-            <Row>
-               <Col xs={1}/>
-               <Col xs={10}>
-                  <ListGroup.Item action
-                     key={`item-${mr.id}}`}
-                     onClick={(e) => {
-                        setSelectedRange(mr);
-                     }}
-                  >
-                     {mr.name}
-                  </ListGroup.Item>
-               </Col>             
-               <Col xs={1}/>
-            </Row>		
+				<Row>
+					<Col xs={1} />
+					<Col xs={10}>
+						<ListGroup.Item
+							action
+							key={`item-${mr.id}}`}
+							onClick={(e) => {
+								setSelectedRange(mr);
+							}}
+						>
+							{mr.name}
+						</ListGroup.Item>
+					</Col>
+					<Col xs={1} />
+				</Row>
 			))}
 		</ListGroup>
 	));
@@ -64,21 +65,32 @@ export default function Segment() {
 	});
 
 	const segments = filteredSegments.map((seg) => (
-      <Link to={`/admin/segment/${seg.id}`} style={{textDecoration: 'none'}}>
-		   <ListGroup.Item action>			
+		<Link to={`/admin/segment/${seg.id}`} style={{ textDecoration: "none" }}>
+			<ListGroup.Item action>
 				{seg.startPoint.name}-{seg.endPoint.name}
-		   </ListGroup.Item>
-      </Link>
+			</ListGroup.Item>
+		</Link>
 	));
 	return (
 		<Fragment>
 			<Container className="mt-4">
-            <Link to="/admin/segment/new">
-               <Button>
-                  Dodaj nowy odcinek
-               </Button>
-            </Link>
-				{!selectedRange ? groups : segments}
+				<Link to="/admin/segment/new">
+					<Button>Dodaj nowy odcinek</Button>
+				</Link>
+				{!selectedRange ? (
+					groups
+				) : (
+					<Fragment>
+						<Button
+							onClick={() => {
+								setSelectedRange(undefined);
+							}}
+						>
+							Powrót
+						</Button>
+						{segments}
+					</Fragment>
+				)}
 			</Container>
 		</Fragment>
 	);

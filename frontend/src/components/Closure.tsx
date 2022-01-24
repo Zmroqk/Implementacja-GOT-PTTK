@@ -75,7 +75,7 @@ export default function Closure() {
 								)
 								.map((cl) => (
 									<ListGroup.Item action key={`closure-item-${cl.id}`}>
-										{cl.segment.name} {cl.closedFrom} {cl.closedTo}{" "}
+										{cl.segment.name}{"   Zamkniety od:   "}{cl.closedFrom}{"   Zamknięty do:   "}{cl.closedTo}{"      "}
 										<Button onClick={() => openHandler(cl.id)}>
 											Otwórz odcinek
 										</Button>
@@ -107,9 +107,9 @@ export default function Closure() {
 								)
 								.map((cl) => (
 									<ListGroup.Item key={`closure-item-${cl.id}`}>
-										{cl.segment.name}-{cl.closedFrom}-{cl.closedTo}{" "}
+										{cl.segment.name}{"   Zamkniety od:   "}{cl.closedFrom}{"   Zamknięty do:   "}{cl.closedTo}{"     "}
 										<Button onClick={() => openHandler(cl.id)}>
-											Otwórz odcinek
+											Anuluj zamknięcie
 										</Button>
 									</ListGroup.Item>
 								))}

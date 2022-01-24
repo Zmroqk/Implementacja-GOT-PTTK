@@ -44,6 +44,7 @@ export default function TripForm() {
       <tr>
          <td>{idx + 1}</td>
          <td>{ts.segment?.name}</td>
+         <td>{ts.direction}</td>
          <td>{ts.segment?.endPoint.name == ts.direction ? ts.segment.points : ts.segment?.pointsReverse}</td>
       </tr>
    ));
@@ -90,7 +91,7 @@ export default function TripForm() {
    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (buttonRef.current) {
-			// buttonRef.current.disabled = true;
+			buttonRef.current.disabled = true;
 		}
 		if (
 			startDateRef.current &&
@@ -102,7 +103,7 @@ export default function TripForm() {
             tripPlanId: Number(planId),
             dateStart: startDateRef.current.value,
             dateEnd: endDateRef.current.value,
-            idLeaderPresent: leaderPresentRef.current.checked,
+            isLeaderPresent: leaderPresentRef.current.checked,
 			};
 
          console.log(body);
@@ -117,7 +118,8 @@ export default function TripForm() {
 				if (res.status == 200 || res.status == 201) {
 					// navigate("/tourist/badge");
 				}
-            else {
+            else if(buttonRef.current){
+               buttonRef.current.disabled = false;
                // TODO unlock button and do something
             }
 			});
@@ -153,6 +155,7 @@ export default function TripForm() {
                   <tr>
                      <th>L.p.</th>
                      <th>Odcinek</th>
+                     <th>Kierunek</th>
                      <th>Punkty GOT</th>
                   </tr>
                </thead>

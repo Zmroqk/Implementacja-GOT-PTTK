@@ -37,7 +37,7 @@ export default function Badge() {
 
   {/* TODO - to ma fetchowac plany wycieczek a fetchuje wszystkie plany */}
   useEffect(() => {
-		fetch("http://localhost:3001/Tourist/trip/trips")
+		fetch("http://localhost:3001/Tourist/trip/trips/")
 			.then((tripData) => tripData.json())
 			.then((jsonData) => setTripData(jsonData));
 	}, []);

@@ -4,6 +4,7 @@ import {
    Controller,
    Get,
    InternalServerErrorException,
+   Param,
    Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,9 +18,14 @@ import { TripService } from './trip.service';
 export class TripController {
    constructor(private tripService: TripService) {}
 
-   @Get('trips')
+   @Get('plans')
    async getTripPlans(): Promise<TripPlan[]> {
-      return this.tripService.getTripPlans();
+      return await this.tripService.getTripPlans();
+   }
+
+   @Get('trip/:userId')
+   async getUserTrips(@Param('userId') userId: number): Promise<Trip[]> {
+      return await this.tripService.getUserTrips(userId)
    }
 
    @Post('create/plan')

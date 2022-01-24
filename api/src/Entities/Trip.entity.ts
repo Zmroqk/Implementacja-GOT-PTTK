@@ -28,5 +28,5 @@ export class Trip {
    badge: Badge
 
    @OneToOne(() => Documentation, doc => doc.trip, { cascade: true })
-   documentation: Documentation | null
+   documentation: Documentation
 }
