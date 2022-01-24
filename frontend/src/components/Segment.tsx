@@ -74,9 +74,12 @@ export default function Segment() {
 	return (
 		<Fragment>
 			<Container className="mt-4">
-				<Link to="/admin/segment/new">
-					<Button>Dodaj nowy odcinek</Button>
-				</Link>
+            <div>
+               <h2>Odcinki</h2>
+               <Link to="/admin/segment/new">
+                  <Button className="mb-2">Dodaj nowy odcinek</Button>
+               </Link>
+            </div>
 				{!selectedRange ? (
 					groups
 				) : (

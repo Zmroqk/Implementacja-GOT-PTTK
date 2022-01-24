@@ -24,8 +24,6 @@ export default function Trip() {
     return arr.indexOf(value) === index;
   }
 
-  console.log(badgeData);
-
    useEffect(() => {
 		fetch("http://localhost:3001/tourist/badge/ongoing/2")
 			.then((badgeData) => badgeData.json())
@@ -40,7 +38,7 @@ export default function Trip() {
 			.then((jsonData) => setTripData(jsonData));
 	}, []);
 
-  const tripPlans = tripData.map((t) => (
+  const tripPlans = tripData.slice(0).reverse().map((t) => (
     <Row className="mb-2">
       <Container className="bg-light py-2 px-2 rounded">
         <Row>
@@ -98,14 +96,17 @@ export default function Trip() {
               </Link>
             </Col>
             <Col className="bg-light py-4 col-md-auto">
-              <h4>Aktualnie zdobywana odznaka:</h4>
-              { badgeData.badge.type ? (
-                <>
-                  <h4 className="text-center">GOT {badgeData.badge.type.type} {badgeData.badge.level.level}</h4>
-                  <h4 className="text-center">Punkty GOT: {badgeData.points}</h4>
-                </>
-              ) : null }
-              
+              <Row>
+                <Col>
+                <h4>Aktualnie zdobywana odznaka:</h4>
+                { badgeData.badge.type ? (
+                  <>
+                    <h4 className="text-center">GOT {badgeData.badge.type.type} {badgeData.badge.level.level}</h4>
+                    <h4 className="text-center">Punkty GOT: {badgeData.points}</h4>
+                  </>
+                ) : null }
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Row>

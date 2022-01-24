@@ -385,19 +385,22 @@ export function SegmentForm() {
 	};
 
 	return (
-		<Container>
+		<Container className="mt-4">
 			<Link to="/admin/segment">
-				<Button>Powrót</Button>
+				<Button className="mb-2">Powrót</Button>
 			</Link>
-			<Form onSubmit={onSubmit}>
+			<Form className="d-grid gap-2" onSubmit={onSubmit}>
 				<Form.Group controlId="mountainGroupId">
 					<Form.Label>Grupa górska</Form.Label>
 					<Form.Select
 						ref={mountainGroupRef}
 						onChange={(e) => {
+                     const mountainGroup = data.mountainGroups.find(mg => mg.id === Number.parseInt(e.currentTarget.value))
+                     const mountainRange = mountainGroup?.mountainRanges[0]
 							setFormData({
 								...formData,
 								mgId: Number.parseInt(e.currentTarget.value),
+                        mrId: mountainRange ? mountainRange.id : undefined
 							});
 						}}
 					>

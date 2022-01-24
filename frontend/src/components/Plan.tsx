@@ -140,7 +140,7 @@ export default function Plan() {
    const navigate = useNavigate();
 
    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	  e.preventDefault();
       if (descriptionRef.current) {
          const body = {
             user_id: 2,
@@ -161,7 +161,7 @@ export default function Plan() {
 				},
 			}).then((res) => {
 				if (res.status == 200 || res.status == 201) {
-					navigate("/tourist/badge");
+					navigate("/tourist/trip");
 				}
             else {
                // TODO unlock button and do something

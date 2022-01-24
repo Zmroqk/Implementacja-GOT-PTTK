@@ -14,6 +14,8 @@ interface ITripFormProps {
 }
 
 export default function TripForm() {
+   const userId = 2;
+
    const [tripData, setTripData] = useState<TripPlan[]>([]);
 
    useEffect(() => {
@@ -28,10 +30,8 @@ export default function TripForm() {
       points: 0,
       });
    
-      console.log(badgeData);
-   
    useEffect(() => {
-      fetch("http://localhost:3001/tourist/badge/ongoing/2")
+      fetch(`http://localhost:3001/tourist/badge/ongoing/${userId}`)
          .then((badgeData) => badgeData.json())
          .then((jsonData) => setBadgeData(jsonData));
    }, []);
@@ -49,6 +49,9 @@ export default function TripForm() {
       </tr>
    ));
 
+   const [validated, setValidated] = useState(false);
+   const [alertVisible, setAlertVisible] = useState(false);
+
    const startDateRef = useRef<HTMLInputElement>(null);
 	const endDateRef = useRef<HTMLInputElement>(null);
 	const leaderPresentRef = useRef<HTMLInputElement>(null);
@@ -59,18 +62,20 @@ export default function TripForm() {
          <Form.Group controlId="dateFromId">
             <Form.Label>Data rozpoczęcia</Form.Label>
             <FormControl
+               required
                ref={startDateRef}
                type="datetime-local"
-               placeholder="Podaj liczbę punktow"
             />
+            <Form.Control.Feedback type="invalid">Wprowadź datę i czas rozpoczęcia wycieczki.</Form.Control.Feedback>
          </Form.Group>
          <Form.Group controlId="dateToId">
             <Form.Label>Data zakończenia</Form.Label>
             <FormControl
+               required
                ref={endDateRef}
                type="datetime-local"
-               placeholder="Podaj liczbę punktow"
             />
+            <Form.Control.Feedback type="invalid">Wprowadź datę i czas zakończenia wycieczki.</Form.Control.Feedback>
          </Form.Group>
          <Row className="mt-3">
             <Col className="col-md-auto">
@@ -90,6 +95,12 @@ export default function TripForm() {
 
    const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+
+      if (e.currentTarget.checkValidity() === false) {
+         e.stopPropagation();
+      }
+      setValidated(true)
+
 		if (buttonRef.current) {
 			buttonRef.current.disabled = true;
 		}
@@ -99,14 +110,12 @@ export default function TripForm() {
 			leaderPresentRef.current
 		) {
 			const body = {
-				userId: 2,  // TODO: hardcoded
+				userId: userId,
             tripPlanId: Number(planId),
             dateStart: startDateRef.current.value,
             dateEnd: endDateRef.current.value,
             isLeaderPresent: leaderPresentRef.current.checked,
 			};
-
-         console.log(body);
 
 			fetch("http://localhost:3001/tourist/trip/create/plan", {
 				method: "POST",
@@ -116,15 +125,28 @@ export default function TripForm() {
 				},
 			}).then((res) => {
 				if (res.status == 200 || res.status == 201) {
-					// navigate("/tourist/badge");
+					navigate("/tourist/badge");
 				}
             else if(buttonRef.current){
                buttonRef.current.disabled = false;
+               setAlertVisible(true);
+               setValidated(false);
                // TODO unlock button and do something
             }
 			});
 		}
 	};
+
+   // let badgeImgPath = "https://via.placeholder.com/150"
+   // if (badgeData.badge.level) {
+   //    if (badgeData.badge.level.level == "Brązowa") {
+   //       badgeImgPath = "/mala_braz.png";
+   //    } else if (badgeData.badge.level.level == "Srebrna") {
+   //       badgeImgPath = "/mala_srebr.png";
+   //    } else if (badgeData.badge.level.level == "Złota") {
+   //       badgeImgPath = "/mala_zlota.png";
+   //    }
+   // }
 
   return (
     <Container className="my-4">
@@ -137,7 +159,7 @@ export default function TripForm() {
             <Alert className="text-center" variant="dark">
                <Col>
                   <h5>Aktualnie zdobywana odznaka:</h5>
-                  { badgeData.badge.type ? (
+                  { badgeData.badge.type && badgeData.badge.level ? (
                   <>
                      <h5 className="text-center">GOT {badgeData.badge.type.type} {badgeData.badge.level.level}</h5>
                      <h5>Punkty GOT: {badgeData.points}</h5>
@@ -165,14 +187,13 @@ export default function TripForm() {
             </Table>
             </Row>
 
-            <Form onSubmit={onSubmit}>
+            <Form noValidate validated={validated} onSubmit={onSubmit}>
                <Row>
                   {dateSelect}
                </Row>
 
-               {/* TODO Pliki tak naprawde nie dzialaja */}
                <Form.Group controlId="formFileMultiple" className="mb-3">
-                  <Form.Label>Multiple files input example</Form.Label>
+                  <Form.Label>Dodaj dowody przebycia wycieczki</Form.Label>
                   <Form.Control type="file" multiple />
                </Form.Group>
 
@@ -182,6 +203,15 @@ export default function TripForm() {
             </Form>
          </Col>
       </Row>
+
+      { alertVisible ? (
+      <Alert
+         variant="danger"
+         className="mt-3">
+         <h5>Niepoprawne daty</h5>
+         <p>Wprowadzone daty rozpoczęcia i zakończenia wycieczki są niepoprawne</p>
+      </Alert>
+      ) : null }
     </Container>
   );
 }

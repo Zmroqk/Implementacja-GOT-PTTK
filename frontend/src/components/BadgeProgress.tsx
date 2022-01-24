@@ -23,6 +23,16 @@ export default function BadgeProgress(props: IBadgeProgressProps) {
         badgeImgPath = "/mala_zlota.png";
     }
 
+    const rangeChecker = (value: number) => {
+      if(value >= 0 && value < 0.25){
+         return "danger"
+      }
+      if(value >= 0.25 && value < 0.85) {
+         return "warning"
+      }
+      return "success"
+    }
+
   return (
       <>
         <Container className="py-4 bg-light text-center">
@@ -39,7 +49,7 @@ export default function BadgeProgress(props: IBadgeProgressProps) {
                 <h4>Punkty GOT: {props.points}/{props.pointsMax}</h4>
                 <div>
                     <ProgressBar 
-                    variant={props.points >= props.pointsMax ? "success" : "warning"}
+                    variant={rangeChecker(props.points/props.pointsMax)}
                     now={100 * props.points / props.pointsMax} />
                 </div>
                 
@@ -48,14 +58,14 @@ export default function BadgeProgress(props: IBadgeProgressProps) {
                 <h4>Pasma górskie: {props.mountainRangesCount}/{props.maxRangesCount}</h4>                
                 <div>
                     <ProgressBar
-                    variant={props.mountainRangesCount >= props.maxRangesCount ? "success" : "warning"}
+                    variant={rangeChecker(props.mountainRangesCount/props.maxRangesCount)}
                     now={Math.min(100 * props.mountainRangesCount / props.maxRangesCount, 100)} />
                 </div>
             </Row>
             <Row className="mt-4">
                 <h4>Stosunek szlaków po stronie polskiej: {Math.trunc(100 * props.inPolandRatio)}%</h4>                
                 <div>
-                    <ProgressBar variant={props.inPolandRatio > 50.0 ? "success" : "warning"} now={100 * props.inPolandRatio}/>
+                    <ProgressBar variant={rangeChecker(props.inPolandRatio)} now={100 * props.inPolandRatio}/>
                 </div>
             </Row>
             <Row className="mt-4">

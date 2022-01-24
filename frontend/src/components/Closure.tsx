@@ -122,13 +122,13 @@ export default function Closure() {
 
 	return (
 		<Fragment>
-			<Container className="mt-4">
+			<Container className="mt-4 d-grid gap-2">
 				<Row>
-					<Col>
+					<Col className="d-grid gap-2">
 						<div>
 							<h2>Zamknięte Odcinki</h2>
 							<Link to="/admin/closure/new">
-								<Button>Dodaj nowe zamknięcie</Button>
+								<Button style={{ width: 200 }}>Dodaj nowe zamknięcie</Button>
 							</Link>
 						</div>
 						<div>
@@ -141,6 +141,7 @@ export default function Closure() {
 									name="radio-closure"
 									value={1}
 									checked={radioValue === "1"}
+                           style={{ width: 200 }}
 									onChange={(e) => {
 										setRadioValue(e.currentTarget.value);
 									}}
@@ -155,6 +156,7 @@ export default function Closure() {
 									name="radio-closure"
 									value={2}
 									checked={radioValue === "2"}
+                           style={{ width: 200 }}
 									onChange={(e) => {
 										setRadioValue(e.currentTarget.value);
 									}}
@@ -164,7 +166,7 @@ export default function Closure() {
 							</ButtonGroup>
 						</div>
 					</Col>
-					<Col>// TODO Clock</Col>
+					<Col>{/* TODO Clock */ }</Col>
 				</Row>
 				<Row>{radioValue === "1" ? currentClosures : futureClosures}</Row>
 			</Container>

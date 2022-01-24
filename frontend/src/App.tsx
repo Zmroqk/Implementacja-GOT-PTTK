@@ -11,7 +11,7 @@ import {
   Route
 } from "react-router-dom";
 import { Redirect } from './components/Redirect';
-
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 
 

@@ -89,11 +89,13 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 		);
 		*/
 		const segments = data.segments;
-		const waypointsOptions = segments.map((s) => (
-			<option key={s.id} value={s.id}>
-				{s.startPoint.name} - {s.endPoint.name}
-			</option>
-		));
+		const waypointsOptions = segments
+			.filter((seg) => seg.startPoint.mountainRange.id === formData.mrId)
+			.map((s) => (
+				<option key={s.id} value={s.id}>
+					{s.startPoint.name} - {s.endPoint.name}
+				</option>
+			));
 		segmentSelect = (
 			<Fragment>
 				<Form.Group controlId="segmentId">
@@ -107,7 +109,7 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 							});
 						}}
 					>
-						{waypointsOptions}
+						{waypointsOptions === [] ? null : waypointsOptions}
 					</Form.Select>
 				</Form.Group>
 			</Fragment>
@@ -183,17 +185,20 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 	return (
 		<Container>
 			<Link to="/admin/segment">
-				<Button>Powrót</Button>
+				<Button className="mt-3 mb-3">Powrót</Button>
 			</Link>
-			<Form onSubmit={onSubmit}>
+			<Form onSubmit={onSubmit} className="d-grid gap-3">
 				<Form.Group controlId="mountainGroupId">
 					<Form.Label>Grupa górska</Form.Label>
 					<Form.Select
 						ref={mountainGroupRef}
 						onChange={(e) => {
+                     const mountainGroup = data.mountainGroups.find(mg => mg.id === Number.parseInt(e.currentTarget.value))
+                     const mountainRange = mountainGroup?.mountainRanges[0]
 							setFormData({
 								...formData,
 								mgId: Number.parseInt(e.currentTarget.value),
+                        mrId: mountainRange ? mountainRange.id : undefined
 							});
 						}}
 					>
