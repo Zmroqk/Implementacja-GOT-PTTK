@@ -1,4 +1,4 @@
-import { Button, Container, Form, FormControl } from "react-bootstrap";
+import { Alert, Button, Container, Form, FormControl } from "react-bootstrap";
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
 import Waypoint from "../apiEntities/Waypoint.entity";
@@ -144,6 +144,8 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 		);
 	}
 
+	const [alertVisible, setAlertVisible] = useState(false);
+
 	const navigate = useNavigate();
 
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -175,6 +177,7 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 				} else {
 					if (buttonRef.current) {
 						buttonRef.current.disabled = false;
+						setAlertVisible(true);
 					}
 					// TODO unlock button and do something
 				}
@@ -225,6 +228,16 @@ export function ClosureForm({ closureId }: IClosureFormProps) {
 					Zamknij odcinek
 				</Button>
 			</Form>
+
+			{ alertVisible ? (
+				<Alert
+					variant="danger"
+					className="mt-4">
+					<h5>Niepoprawne dane zamknięcia</h5>
+					<p className="mb-0">Wprowadzone daty zamknięcia są niepoprawne</p>
+					<p className="mb-0">Zamknięcie odcinka nie może nastąpić po jego otwarciu</p>
+				</Alert>
+				) : null }
 		</Container>
 	);
 }

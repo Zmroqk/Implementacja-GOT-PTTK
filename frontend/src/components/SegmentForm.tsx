@@ -1,4 +1,4 @@
-import { Button, Container, Form, FormControl } from "react-bootstrap";
+import { Alert, Button, Container, Form, FormControl } from "react-bootstrap";
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import MountainRange from "../apiEntities/MountainRange.entity";
 import Waypoint from "../apiEntities/Waypoint.entity";
@@ -33,6 +33,8 @@ interface ISegmentFormState {
 
 export function SegmentForm() {
 	const params = useParams();
+
+	const [alertVisible, setAlertVisible] = useState(false);
 
 	const [data, setData] = useState<ISegmentState>({
 		mountainGroups: [],
@@ -159,10 +161,13 @@ export function SegmentForm() {
 
 	useEffect(() => {
       if(data.mountainGroups.length > 0){
+         const waypoint = data.waypoints.find(w => w.mountainRange.id == data.mountainRanges[0].id)
          setFormData({
             ...formData,
             mgId: data.mountainGroups[0].id,
-            mrId: data.mountainRanges[0].id
+            mrId: data.mountainRanges[0].id,
+            wsId: waypoint ? waypoint.id : undefined,
+            weId: waypoint ? waypoint.id : undefined
          })
       }
 		if (!params.id) {
@@ -355,6 +360,7 @@ export function SegmentForm() {
                   navigate("/admin/segment");
                } else {
                   // TODO unlock button and do something
+				  setAlertVisible(true);
                }
             });
          }
@@ -378,6 +384,7 @@ export function SegmentForm() {
                   navigate("/admin/segment");
                } else {
                   // TODO unlock button and do something
+				  setAlertVisible(true);
                }
             });
          }			
@@ -427,6 +434,15 @@ export function SegmentForm() {
 					Zapisz
 				</Button>
 			</Form>
+
+			{ alertVisible ? (
+				<Alert
+					variant="danger"
+					className="mt-4">
+					<h5>Niepoprawne dane odcinka</h5>
+					<p className="mb-0">Wprowadzona punktacja odcinka jest niepoprawna</p>
+				</Alert>
+				) : null }
 		</Container>
 	);
 }

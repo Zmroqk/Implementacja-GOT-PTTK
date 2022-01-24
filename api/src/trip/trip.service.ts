@@ -9,6 +9,10 @@ import { Trip } from 'src/Entities/Trip.entity';
 import { TripPlan } from 'src/Entities/TripPlan.entity';
 import { Repository } from 'typeorm';
 
+/**
+ * Service that is responsible for handling getting users trip progress as well as for returning trip plans
+ * and users trips.
+ */
 @Injectable()
 export class TripService {
    constructor(
@@ -21,6 +25,12 @@ export class TripService {
       private documentationStatusRepository: Repository<DocumentationStatus>,
    ) {}
 
+   /**
+    * Get user progress
+    * @param userId User for which we want to check progress
+    * @param badgeId User badge id we are checking progress for
+    * @returns Object of currently acquired points, ratio of trips in poland and unique mountian ranges count
+    */
    async getProgress(
       userId: number,
       badgeId: number,
@@ -80,6 +90,11 @@ export class TripService {
       };
    }
 
+   /**
+    * Get users trips
+    * @param userId User id for which trips we want to get
+    * @returns Array of user trips
+    */
    async getUserTrips(userId: number): Promise<Trip[]> {
       const trips = await this.tripsRepository.find({
          join: {
@@ -98,10 +113,23 @@ export class TripService {
       return trips
    }
 
+   /**
+    * Get all trip plans
+    * @returns Array of trip plans
+    */
    async getTripPlans(): Promise<TripPlan[]> {
       return this.tripPlansRepository.find();
    }
 
+   /**
+    * Create new trip using existing trip plan
+    * @param userId User id for which new trip should be assosiated
+    * @param tripPlanId Trip plan id from which we create trip
+    * @param dateStart Date when trip started
+    * @param dateEnd Date when trip ended
+    * @param isLeaderPresent Was leader present on trip
+    * @returns New trip that was created in database
+    */
    async createTripFromTripPlan(
       userId: number,
       tripPlanId: number,

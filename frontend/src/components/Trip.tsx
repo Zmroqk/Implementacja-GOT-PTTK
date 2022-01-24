@@ -20,9 +20,7 @@ export default function Trip() {
     points: 0,
   });
 
-  function onlyUnique(value: string, index: number, arr: Array<string>) {
-    return arr.indexOf(value) === index;
-  }
+  const [tripData, setTripData] = useState<TripPlan[]>([]);
 
    useEffect(() => {
 		fetch("http://localhost:3001/tourist/badge/ongoing/2")
@@ -30,7 +28,7 @@ export default function Trip() {
 			.then((jsonData) => setBadgeData(jsonData));
 	}, []);
 
-  const [tripData, setTripData] = useState<TripPlan[]>([]);
+  
 
   useEffect(() => {
 		fetch("http://localhost:3001/Tourist/tripplan")

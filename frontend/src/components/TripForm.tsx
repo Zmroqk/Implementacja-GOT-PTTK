@@ -18,18 +18,17 @@ export default function TripForm() {
 
    const [tripData, setTripData] = useState<TripPlan[]>([]);
 
+   const [badgeData, setBadgeData] = useState<IBadgeState>({
+      badge: {} as BadgeEntity,
+      points: 0,
+      });
+
    useEffect(() => {
          fetch("http://localhost:3001/Tourist/tripplan")
             .then((tripData) => tripData.json())
             .then((jsonData) => setTripData(jsonData));
       }, []);
 
-
-   const [badgeData, setBadgeData] = useState<IBadgeState>({
-      badge: {} as BadgeEntity,
-      points: 0,
-      });
-   
    useEffect(() => {
       fetch(`http://localhost:3001/tourist/badge/ongoing/${userId}`)
          .then((badgeData) => badgeData.json())
@@ -48,6 +47,10 @@ export default function TripForm() {
          <td>{ts.segment?.endPoint.name == ts.direction ? ts.segment.points : ts.segment?.pointsReverse}</td>
       </tr>
    ));
+
+   const gotPoints = tripPlan?.tripSegments.map(ts => {
+      return ts.direction === ts.segment?.endPoint.name ? ts.segment.points : ts.segment?.pointsReverse
+   }).reduce((a, b) => a && b ? a + b : 0);
 
    const [validated, setValidated] = useState(false);
    const [alertVisible, setAlertVisible] = useState(false);
@@ -98,8 +101,9 @@ export default function TripForm() {
 
       if (e.currentTarget.checkValidity() === false) {
          e.stopPropagation();
+         e.preventDefault();
       }
-      setValidated(true)
+      // setValidated(true)
 
 		if (buttonRef.current) {
 			buttonRef.current.disabled = true;
@@ -136,17 +140,6 @@ export default function TripForm() {
 			});
 		}
 	};
-
-   // let badgeImgPath = "https://via.placeholder.com/150"
-   // if (badgeData.badge.level) {
-   //    if (badgeData.badge.level.level == "Brązowa") {
-   //       badgeImgPath = "/mala_braz.png";
-   //    } else if (badgeData.badge.level.level == "Srebrna") {
-   //       badgeImgPath = "/mala_srebr.png";
-   //    } else if (badgeData.badge.level.level == "Złota") {
-   //       badgeImgPath = "/mala_zlota.png";
-   //    }
-   // }
 
   return (
     <Container className="my-4">
@@ -197,9 +190,16 @@ export default function TripForm() {
                   <Form.Control type="file" multiple />
                </Form.Group>
 
-               <Button type="submit" ref={buttonRef}>
-                  Zapisz wycieczkę
-               </Button>
+               <Row>
+                  <Col>
+                     <Button type="submit" ref={buttonRef}>
+                        Zapisz wycieczkę
+                     </Button>
+                  </Col>
+                  <Col>
+                        <h4 className="float-end">Punkty GOT: {gotPoints}</h4>
+                  </Col>
+               </Row>
             </Form>
          </Col>
       </Row>
@@ -209,7 +209,8 @@ export default function TripForm() {
          variant="danger"
          className="mt-3">
          <h5>Niepoprawne daty</h5>
-         <p>Wprowadzone daty rozpoczęcia i zakończenia wycieczki są niepoprawne</p>
+         <p className="mb-0">Wprowadzone daty rozpoczęcia i zakończenia wycieczki są niepoprawne</p>
+         <p className="mb-0">Data rozpoczęcia wycieczki musi nastąpić przed datą zakończenia</p>
       </Alert>
       ) : null }
     </Container>

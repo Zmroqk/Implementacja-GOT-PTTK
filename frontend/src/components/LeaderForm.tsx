@@ -1,4 +1,4 @@
-import { Button, Card, Container, Form } from "react-bootstrap";
+import { Alert, Button, Card, Container, Form } from "react-bootstrap";
 import MountainGroup from "../apiEntities/MountainGroup.entity";
 import { Leader as LeaderEntity } from "../apiEntities/Leader.entity";
 import {
@@ -21,6 +21,7 @@ interface ILeaderFormState {
 
 export function LeaderForm() {
 	const params = useParams();
+	const [alertVisible, setAlertVisible] = useState(false);
 	const [data, setData] = useState<ILeaderState>({
 		mountainGroups: [],
 		leaders: [],
@@ -72,6 +73,8 @@ export function LeaderForm() {
 
 	const navigate = useNavigate();
 
+	
+
 	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (buttonRef.current) {
@@ -96,6 +99,7 @@ export function LeaderForm() {
 				} else {
 					if (buttonRef.current) {
 						buttonRef.current.disabled = false;
+						setAlertVisible(true);
 					}
 					// TODO unlock button and do something
 				}
@@ -163,6 +167,15 @@ export function LeaderForm() {
 					Zapisz zmiany
 				</Button>
 			</Form>
+
+			{ alertVisible ? (
+			<Alert
+				variant="danger"
+				className="mt-4">
+				<h5>Niepoprawne dane przodownika</h5>
+				<p>Wprowadź poprawne dane przodownika</p>
+			</Alert>
+			) : null }
 		</Container>
 	);
 }
